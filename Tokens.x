@@ -2,6 +2,8 @@
 module Tokens where 
 }
 
+--Add stream tokens
+
 %wrapper "posn" 
 $digit = 0-9    
 --Digits 
@@ -32,12 +34,12 @@ tokens :-
   \+                            { tok (\p s -> TokenAdd p) }
   \-                            { tok (\p s -> TokenMinus p) }
   \*                            { tok (\p s -> TokenMultiply p) }
-  \/                            { tok (\p s -> TokenDivision p) }
+  \/                            { tok (\p s -> TokenDivide p) }
   \^                            { tok (\p s -> TokenExponential p) }
-  \<                            { tok (\p s -> TokenLess p) }
-  \>                            { tok (\p s -> TokenGreat p) }
-  \<=                           { tok (\p s -> TokenLessEq p) }
-  \>=                           { tok (\p s -> TokenGreatEq p) }
+  \<                            { tok (\p s -> TokenLesser p) }
+  \>                            { tok (\p s -> TokenGreater p) }
+  \<=                           { tok (\p s -> TokenLesserEqual p) }
+  \>=                           { tok (\p s -> TokenGreaterEqual p) }
   \|                            { tok (\p s -> TokenOr p) }
   \;                            { tok (\p s -> TokenSeq p )}
   \(                            { tok (\p s -> TokenLParen p) }
@@ -66,12 +68,12 @@ data Token =
   TokenAdd AlexPosn            |
   TokenMinus AlexPosn          |
   TokenMultiply AlexPosn       |
-  TokenDivision AlexPosn       |
+  TokenDivide AlexPosn         |
   TokenExponential AlexPosn    |
-  TokenLess AlexPosn           |
-  TokenGreat AlexPosn          |
-  TokenLessEq AlexPosn         |
-  TokenGreatEq AlexPosn        |
+  TokenLesser AlexPosn         |
+  TokenGreater AlexPosn        |
+  TokenLesserEqual AlexPosn    |
+  TokenGreaterEqual AlexPosn   |
   TokenOr AlexPosn             |
   TokenSeq AlexPosn            |
   TokenLParen AlexPosn         |
@@ -94,12 +96,12 @@ tokenPosn (TokenAnd (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenAdd (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenMinus (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenMultiply (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenDivision (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenDiviide (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenExponential (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenLess (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenGreat (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenLessEq (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenGreatEq (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenLesser (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenGreater (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenLesserEqual (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenGreaterEqual (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenOr (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenSeq (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLParen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
