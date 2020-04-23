@@ -1,3 +1,5 @@
+-- alex <inputfile> -o <outputfile>
+
 { 
 module Tokens where 
 }
@@ -5,16 +7,25 @@ module Tokens where
 --Add stream tokens
 
 %wrapper "posn" 
+
+--Digits
 $digit = 0-9    
---Digits 
 
-$alpha = [a-zA-Z]
 --Letters
+$lower    = a-z
+$upper    = A-Z
+$alpha    = [$upper $lower]
 
-$eol   = [\n] 
 --End of line function
+$eol   = [\n] 
+
+--Comments?
+--@comment = "--".*
+--@ws      = $white+ | @comment
 
 tokens :-
+
+--@ws                             { skip }     -- white space; ignore
 
   $eol                          ;
   $white+                       ; 
@@ -27,6 +38,7 @@ tokens :-
   Then                          { tok (\p s -> TokenThen p) }
   Else                          { tok (\p s -> TokenElse p) }
   While                         { tok (\p s -> TokenWhile p) }
+  Print                         { tok (\p s -> TokenPrint p) }
   \=                            { tok (\p s -> TokenEqual p) }
   \==                           { tok (\p s -> TokenEquivalent p) }
   \!                            { tok (\p s -> TokenNot p) }
@@ -41,17 +53,23 @@ tokens :-
   \<=                           { tok (\p s -> TokenLesserEqual p) }
   \>=                           { tok (\p s -> TokenGreaterEqual p) }
   \|                            { tok (\p s -> TokenOr p) }
-  \;                            { tok (\p s -> TokenSeq p )}
-  \(                            { tok (\p s -> TokenLParen p) }
-  \)                            { tok (\p s -> TokenRParen p) }
+--  \;                            { tok (\p s -> TokenSeq p)}
+  \(                            { tok (\p s -> TokenLeftParen p) }
+  \)                            { tok (\p s -> TokenRightParen p) }
+  \{                            { tok (\p s -> TokenLeftBrace p) }
+  \}                            { tok (\p s -> TokenRightBrace p) }
+  \[                            { tok (\p s -> TokenStreamStart p) }
+  \]                            { tok (\p s -> TokenStreamEnd p) }
+--  \0                           { zero  }
 
 { 
 -- Each action has type :: AlexPosn -> String -> Token 
-
--- Helper function
+-- Helper Function
 tok f p s = f p s
 
--- Token type: 
+
+-- Each action has type :: String -> Token
+-- Token Type: 
 data Token = 
   TokenDigit AlexPosn Int      |
   TokenInt AlexPosn Int        | 
@@ -61,6 +79,7 @@ data Token =
   TokenThen AlexPosn           |
   TokenElse AlexPosn           |
   TokenWhile AlexPosn          |
+  TokenPrint AlexPosn          |
   TokenEqual AlexPosn          |
   TokenEquivalent AlexPosn     |
   TokenNot AlexPosn            |
@@ -75,11 +94,18 @@ data Token =
   TokenLesserEqual AlexPosn    |
   TokenGreaterEqual AlexPosn   |
   TokenOr AlexPosn             |
-  TokenSeq AlexPosn            |
-  TokenLParen AlexPosn         |
-  TokenRParen AlexPosn      
+--  TokenSeq AlexPosn            |
+  TokenLeftParen AlexPosn      |
+  TokenRightParen AlexPosn     |
+  TokenLeftBrace AlexPosn      |
+  TokenRightBrace AlexPosn     |
+  TokenStreamStart AlexPosn    |
+  TokenStreamEnd AlexPosn      |
+--  ZeroT
   deriving (Eq,Show) 
 
+
+--Token Functions
 tokenPosn :: Token -> String
 tokenPosn (TokenDigit  (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenInt  (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
@@ -89,6 +115,7 @@ tokenPosn (TokenIf (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenThen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenElse (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenWhile (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenPrint (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenEqual (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenEquivalent (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenNot (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
@@ -103,9 +130,16 @@ tokenPosn (TokenGreater (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLesserEqual (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenGreaterEqual (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenOr (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenSeq (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenLParen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenRParen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+--tokenPosn (TokenSeq (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenLeftParen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenRightParen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenLeftBrace (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenRightBrace (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenStreamStart (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenStreamEnd (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+--zero      (p,_,_)   _  = return $ T p ZeroT
 
+--skip :: Action
+--skip _ _ = lexToken
 
 }

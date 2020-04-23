@@ -4,7 +4,11 @@ import Tokens
 import Grammar
 
 type Env = 
-type Kont = 
+type Kontinuation = 
+type State = 
+
+
+--type Sequence = 
  --Fuck this gon be a real effort
  
  
