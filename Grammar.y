@@ -112,7 +112,7 @@ parseError :: [Token] -> a
 parseError [] = error "Unknown Parse Error" 
 parseError (t:ts) = error ("Parse error at line:column " ++ (tokenPosn t))
 
-
+type Var = String
 
 data Exp = Int Int
          | Digit Int
