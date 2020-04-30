@@ -96,7 +96,7 @@ Exp :
     | Exp '-' Exp                { Minus $1 $3 } 
     | Exp '*' Exp                { Multiply $1 $3 } 
     | Exp '/' Exp                { Divide $1 $3 } 
-    | Exp '^' Exp                { Exponetial $1 $3 }
+    | Exp '^' Exp                { Exponential $1 $3 }
     | Exp '<' Exp                { Lesser $1 $3 }
     | Exp '>' Exp                { Greater $1 $3 }
     | Exp '<=' Exp               { LesserEqual $1 $3 }
@@ -121,7 +121,7 @@ data Exp = Int Int
          | Minus Exp Exp
          | Multiply Exp Exp 
          | Divide Exp Exp 
-         | Exponetial Exp Exp
+         | Exponential Exp Exp
          | Lesser Exp Exp
          | Greater Exp Exp
          | LesserEqual Exp Exp
