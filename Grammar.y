@@ -13,7 +13,6 @@ import Tokens
 %error { parseError }
 
 %token 
-   digit   { TokenDigit _ $$ } 
    int     { TokenInt _ $$ }
    var     { TokenVar _ $$ }
    True    { TokenTrue _ }
@@ -23,7 +22,7 @@ import Tokens
    Else    { TokenElse _ }
    While   { TokenWhile _ }
    Print   { TokenPrint _ } 
---   '='     { TokenEqual _ } --unused terminal
+   '='     { TokenEqual _ }
    '=='    { TokenEquivalent _ }
    '!'     { TokenNot _ }
    '&&'    { TokenAnd _ }
@@ -83,13 +82,13 @@ Exp1 :
      If '(' Exp ')' Then Exp1 Else Exp1     { EIf $3 $6 $8}
      | While '(' Exp1 ')' Then Exp          { EWhile $3 $6}
 	 | Print Exp                            { EPrint $2}
+     | var '=' Exp                          { EAssignment $1 $3}
 
 Exp :
     int                          { Int $1 } 
-    | digit                      { Digit $1 }
     | var                        { Var $1 }
-    | True                       { Bool True }
-    | False                      { Bool False }
+    | True                       { EBool True }
+    | False                      { EBool False }
     | Exp '==' Exp               { Equivalent $1 $3 }
     | '!' Exp                    { Not $2 }
     | Exp '&&' Exp               { And $1 $3 }
@@ -112,10 +111,9 @@ parseError :: [Token] -> a
 parseError [] = error "Unknown Parse Error" 
 parseError (t:ts) = error ("Parse error at line:column " ++ (tokenPosn t))
 
-type Var = String
+
 
 data Exp = Int Int
-         | Digit Int
          | Var String 
          | EBool Bool
          | Equivalent Exp Exp
@@ -134,10 +132,11 @@ data Exp = Int Int
          | Or Exp Exp
          deriving (Show,Eq) 
 		 
-data Exp1 = Int
+data Exp1 = Int 
          | EIf Exp Exp1 Exp1
          | EWhile Exp Exp1
          | EPrint Exp
+         | EAssignment String Exp
          deriving (Show,Eq) 
 
 type Environment = [ (String,Expr) ]

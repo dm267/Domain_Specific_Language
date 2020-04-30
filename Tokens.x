@@ -30,9 +30,8 @@ tokens :-
   $eol                          ;
   $white+                       ; 
   "--".*                        ; 
-  [1-9]                         { tok (\p s -> TokenDigit p (read s)) } 
   $digit $digit+                { tok (\p s -> TokenInt p (read s)) } --one or more including 0
-  $alpha [$alpha $digit]*       { tok (\p s -> TokenVar p (read s)) }
+  var                           { tok (\p s -> TokenVar p ) }
   True                          { tok (\p s -> TokenTrue p) }
   False                         { tok (\p s -> TokenFalse p) } 
   If                            { tok (\p s -> TokenIf p) }
@@ -73,9 +72,8 @@ tok f p s = f p s
 -- Each action has type :: String -> Token
 -- Token Type: 
 data Token = 
-  TokenDigit Int AlexPosn      |
   TokenInt Int AlexPosn        |
-  TokenVar String AlexPo       | 
+  TokenVar String AlexPosn     | 
   TokenTrue AlexPosn           |
   TokenFalse AlexPosn          |
   TokenIf AlexPosn             |
@@ -110,9 +108,8 @@ data Token =
 
 --Token Functions
 tokenPosn :: Token -> String
-tokenPosn (TokenDigit  (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenInt  (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenVar s (AlexPn a l c) ) = "var" ++ show(l) ++ ":" ++ show(c)
+tokenPosn (TokenVar (AlexPn a l c) ) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenTrue (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenFalse (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenIf (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
