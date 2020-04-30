@@ -15,6 +15,7 @@ import Tokens
 %token 
    digit   { TokenDigit _ $$ } 
    int     { TokenInt _ $$ }
+   var     { TokenVar _ $$ }
    True    { TokenTrue _ }
    False   { TokenFalse _ }
    If      { TokenIf _ } 
@@ -86,6 +87,7 @@ Exp1 :
 Exp :
     int                          { Int $1 } 
     | digit                      { Digit $1 }
+    | var                        { Var $1 }
     | True                       { Bool True }
     | False                      { Bool False }
     | Exp '==' Exp               { Equivalent $1 $3 }
@@ -96,7 +98,7 @@ Exp :
     | Exp '-' Exp                { Minus $1 $3 } 
     | Exp '*' Exp                { Multiply $1 $3 } 
     | Exp '/' Exp                { Divide $1 $3 } 
-    | Exp '^' Exp                { Exponetial $1 $3 }
+    | Exp '^' Exp                { Exponential $1 $3 }
     | Exp '<' Exp                { Lesser $1 $3 }
     | Exp '>' Exp                { Greater $1 $3 }
     | Exp '<=' Exp               { LesserEqual $1 $3 }
@@ -112,6 +114,7 @@ parseError (t:ts) = error ("Parse error at line:column " ++ (tokenPosn t))
 
 data Exp = Int Int
          | Digit Int
+         | Var String 
          | EBool Bool
          | Equivalent Exp Exp
          | Not Exp
@@ -121,7 +124,7 @@ data Exp = Int Int
          | Minus Exp Exp
          | Multiply Exp Exp 
          | Divide Exp Exp 
-         | Exponetial Exp Exp
+         | Exponential Exp Exp
          | Lesser Exp Exp
          | Greater Exp Exp
          | LesserEqual Exp Exp

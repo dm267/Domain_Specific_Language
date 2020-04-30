@@ -31,7 +31,8 @@ tokens :-
   $white+                       ; 
   "--".*                        ; 
   [1-9]                         { tok (\p s -> TokenDigit p (read s)) } 
-  $digit $digit+                { tok (\p s -> TokenInt p (read s)) }
+  $digit $digit+                { tok (\p s -> TokenInt p (read s)) } --one or more including 0
+  var                           { tok (\p s -> TokenVar p) }
   True                          { tok (\p s -> TokenTrue p) }
   False                         { tok (\p s -> TokenFalse p) } 
   If                            { tok (\p s -> TokenIf p) }
@@ -60,6 +61,7 @@ tokens :-
   \}                            { tok (\p s -> TokenRightBrace p) }
   \[                            { tok (\p s -> TokenStreamStart p) }
   \]                            { tok (\p s -> TokenStreamEnd p) }
+--
 --  \0                           { zero  }
 
 { 
@@ -72,7 +74,8 @@ tok f p s = f p s
 -- Token Type: 
 data Token = 
   TokenDigit AlexPosn Int      |
-  TokenInt AlexPosn Int        | 
+  TokenInt AlexPosn Int        |
+  TokenVar String              | 
   TokenTrue AlexPosn           |
   TokenFalse AlexPosn          |
   TokenIf AlexPosn             |
@@ -109,6 +112,7 @@ data Token =
 tokenPosn :: Token -> String
 tokenPosn (TokenDigit  (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenInt  (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenVar  (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenTrue (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenFalse (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenIf (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
