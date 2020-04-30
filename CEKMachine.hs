@@ -3,40 +3,19 @@ module CEKMachine where
 import Tokens
 import Grammar
 
-type Env = 
-type Kontinuation = 
-type State = 
+type Env = [(String,Exp)]
+type Kontinuation = [Frames]
+type State = (Exp, Env, Kont)
+
+data Holes = HoleL | HoleR deriving Show
+data Frames = Done | AddLK Holes Exp | AddRK Exp Holes
 
 
---type Sequence = 
- --Fuck this gon be a real effort
- 
- 
--- Big-Step Statements
+-- Add definition
+step (Add exp1 exp2, env,kont) = step(exp1,env,AddLK HoleL exp2:kont)
+step (Int a,env,AddLK HoleL exp2:kont) = step (exp2, env,AddRK (Int a) HoleR:kont)
+step (Int b,env,AddRK (Int a) HoleR:kont) = step(Int (a + b),env,kont)
 
 
-
-
-
-
-
-
-
--- Small-Step Statements
-
-
-
-
-
-
-
-
-
--- Sign Evaluations
-
-
-
-
-
-
-
+-- Entry point for execution
+test exp = step(exp,[],[Done])
