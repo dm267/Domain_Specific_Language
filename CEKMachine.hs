@@ -4,7 +4,7 @@ import Tokens
 import Grammar
 
 type Env = [(String,Exp)]
-type Kontinuation = [Frames]
+type Kont = [Frames]
 type State = (Exp, Env, Kont)
 
 data Holes = HoleL | HoleR deriving Show
