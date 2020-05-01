@@ -18,31 +18,30 @@ createStream columnNumber stream
            | otherwise    = 
 
 --Int expression evaluation
-step (Int e) env _ = (Int e) --not sure what should go where the _ is placed
+step (Int e) env kont = (Int e)
 
+step (Add exp1 exp2, env, kont) = step (exp1, env, AddLK HoleL exp2:kont)
+step (Int a, env, AddLK HoleL exp2:kont) = step (exp2, env, AddRK (Int a) HoleR:kont)
+step (Int b, env, AddRK (Int a) HoleR:kont) = step (Int (a + b), env, kont)
 
-step (Add exp1 exp2, env, kont) = step2 (exp1, env, AddLK HoleL exp2:kont)
-step2 (Int a, env, AddLK HoleL exp2:kont) = step2 (exp2, env, AddRK (Int a) HoleR:kont)
-step2 (Int b, env, AddRK (Int a) HoleR:kont) = step2 (Int (a + b), env, kont)
+step (Minus exp1 exp2, env, kont) = step (exp1, env, AddLK HoleL exp2:kont)
+step (Int a, env, AddLK HoleL exp2:kont) = step (exp2, env, AddRK (Int a) HoleR:kont)
+step (Int b, env, AddRK (Int a) HoleR:kont) = step (Int (a - b), env, kont)
 
-step (Minus exp1 exp2, env, kont) = step3 (exp1, env, AddLK HoleL exp2:kont)
-step3 (Int a, env, AddLK HoleL exp2:kont) = step3 (exp2, env, AddRK (Int a) HoleR:kont)
-step3 (Int b, env, AddRK (Int a) HoleR:kont) = step3 (Int (a - b), env, kont)
+step (Multiply exp1 exp2, env, kont) = step (exp1, env, AddLK HoleL exp2:kont)
+step (Int a, env, AddLK HoleL exp2:kont) = step (exp2, env, AddRK (Int a) HoleR:kont)
+step (Int b, env, AddRK (Int a) HoleR:kont) = step (Int (a * b), env, kont)
 
-step (Multiply exp1 exp2, env, kont) = step4 (exp1, env, AddLK HoleL exp2:kont)
-step4 (Int a, env, AddLK HoleL exp2:kont) = step4 (exp2, env, AddRK (Int a) HoleR:kont)
-step4 (Int b, env, AddRK (Int a) HoleR:kont) = step4 (Int (a * b), env, kont)
+step (Divide exp1 exp2, env, kont) = step (exp1, env, AddLK HoleL exp2:kont)
+step (Int a, env, AddLK HoleL exp2:kont) = step (exp2, env, AddRK (Int a) HoleR:kont)
+step (Int b, env, AddRK (Int a) HoleR:kont) = step (Int (a `div` b), env, kont)
 
-step (Divide exp1 exp2, env, kont) = step5 (exp1, env, AddLK HoleL exp2:kont)
-step5 (Int a, env, AddLK HoleL exp2:kont) = step5 (exp2, env, AddRK (Int a) HoleR:kont)
-step5 (Int b, env, AddRK (Int a) HoleR:kont) = step5 (Int (a `div` b), env, kont)
+step (Exponential exp1 exp2, env, kont) = step (exp1, env, AddLK HoleL exp2:kont)
+step (Int a, env, AddLK HoleL exp2:kont) = step (exp2, env, AddRK (Int a) HoleR:kont)
+step (Int b, env, AddRK (Int a) HoleR:kont) = step (Int (a ^ b), env, kont)
 
-step (Exponential exp1, env, kont) = step6 (exp1, env, AddLK HoleL exp2:kont)
-step6 (Int a
-
-
-step (Negate exp1, env, kont) = step6 (exp1, env,)
-step6 (Int a, env) = step6 (Int (a `div` b), env, kont)
+step (Negate exp1, env, kont) = step (exp1, env, kont)
+step (Int a, env,  kont) = step (Int (-a), env, kont)
 
 
 --Bool expression evaluation
