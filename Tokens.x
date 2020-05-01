@@ -52,7 +52,7 @@ tokens :-
   \>                            { tok (\p s -> TokenGreater p) }
   \<=                           { tok (\p s -> TokenLesserEqual p) }
   \>=                           { tok (\p s -> TokenGreaterEqual p) }
-  \|                            { tok (\p s -> TokenOr p) }
+  \||                           { tok (\p s -> TokenOr p) }
 --  \;                            { tok (\p s -> TokenSeq p)}
   \(                            { tok (\p s -> TokenLeftParen p) }
   \)                            { tok (\p s -> TokenRightParen p) }
