@@ -9,7 +9,7 @@ type State = (Exp, Env, Kont)
 type Stream = []
 
 data Holes = HoleL | HoleR deriving Show
-data Frames = Done | IfK Stmt1 Stmt2 | WhileK Exp | AddLK Holes Exp | AddRK Exp Holes
+data Frames = Done | IfK Stmt1 Stmt2 | WhileK Exp | AssignmentK Exp | AddLK Holes Exp | AddRK Exp Holes
 
 
 --Makes stream accessible from input
@@ -18,15 +18,20 @@ createStream columnNumber stream
            | stream == [] = error "No Stream Input" 
            | otherwise    =
 
--- If then else statement definition
+-- EIf definition
 step (EIf cond stmt1 stmt2, env, kont) = step(cond, env, IfK stmt1 stmt2: kont)
 step (Boolean True, env, IfK stmt1 stmt2: kont) = step(stmt1, env, kont)
 step (Boolean False, env, IfK exp: kont) = step(stmt2, env, kont)
 
--- While then definition
+-- EWhile definition
 step (EWhile cond exp, env, kont) = step(cond, env, WhileK exp: kont)
 step (Boolean True, env, WhileK exp: kont) = step(stmt1, env, kont)
 step (Boolean False, env, WhileK exp: kont) = step(EBool False, env, kont)
+
+-- EAssignment definition
+step (EAssignment var exp, env, kont) = step(exp, env, AssignmentK var: kont)
+step (Int a, env, AssignmentK var:kont) = step(exp, (var, Int a):env, kont)
+step (EBool b, env, AssignmentK var:kont) = step(exp, (var, EBool b):env, kont)
 
 -- Add definition
 step (Add exp1 _, env, kont) = error "Wrong Input"
