@@ -9,7 +9,7 @@ type State = (Exp, Env, Kont)
 type Stream = []
 
 data Holes = HoleL | HoleR deriving Show
-data Frames = Done | AddLK Holes Exp | AddRK Exp Holes
+data Frames = Done | IfK Stmt1 Stmt2 | AddLK Holes Exp | AddRK Exp Holes
 
 
 --Makes stream accessible from input
@@ -17,6 +17,12 @@ createStream :: String -> [Stream] -> [Stream]
 createStream columnNumber stream
            | stream == [] = error "No Stream Input" 
            | otherwise    =
+
+-- If then else statement definition
+step (EIf cond stmt1 stmt2, env, kont) = step(cond, env, IfK stmt1 stmt2: kont)
+step(Boolean True, env, IfK stmt1 stmt2: kont) = step(stmt1, env, kont)
+step(Boolean False, env, IfK exp: kont) = step(stmt2, env, kont)
+
 
 -- Add definition
 step (Add exp1 _, env, kont) = error "Wrong Input"
