@@ -9,6 +9,7 @@ type State = (Exp, Env, Kont)
 type Stream = []
 
 data Holes = HoleL | HoleR deriving Show
+<<<<<<< HEAD
 data Frames = Done | IfK Exp1 Exp1 | WhileK Exp1 | AssignmentK Exp | AddLK Holes Exp | AddRK Exp Holes
 
 
@@ -23,6 +24,26 @@ step (EBool False, env, IfK stmt1 stmt2: kont) = step(stmt2, env, kont)
 step (EWhile cond exp, env, kont) = step(cond, env, WhileK exp: kont)
 step (EBool True, env, WhileK exp: kont) = step(exp, env, kont)
 step (EBool False, env, WhileK exp: kont) = step(EBool False, env, kont)
+=======
+data Frames = Done | IfK Stmt1 Stmt2 | WhileK Exp | AssignmentK Exp | AddLK Holes Exp | AddRK Exp Holes
+
+
+--Makes stream accessible from input
+createStream :: String -> [Stream] -> [Stream]
+createStream columnNumber stream
+           | stream == [] = error "No Stream Input" 
+           | otherwise    =
+
+-- EIf definition
+step (EIf cond stmt1 stmt2, env, kont) = step(cond, env, IfK stmt1 stmt2: kont)
+step (Boolean True, env, IfK stmt1 stmt2: kont) = step(stmt1, env, kont)
+step (Boolean False, env, IfK exp: kont) = step(stmt2, env, kont)
+
+-- EWhile definition
+step (EWhile cond exp, env, kont) = step(cond, env, WhileK exp: kont)
+step (Boolean True, env, WhileK exp: kont) = step(stmt1, env, kont)
+step (Boolean False, env, WhileK exp: kont) = step(EBool False, env, kont)
+>>>>>>> 3eadf1cd474acf590e94fb404fec2983bfa32dfe
 
 -- EAssignment definition
 step (EAssignment var exp, env, kont) = step(exp, env, AssignmentK var: kont)
@@ -30,7 +51,11 @@ step (Int a, env, AssignmentK var:kont) = step(exp, (var, Int a):env, kont)
 step (EBool b, env, AssignmentK var:kont) = step(exp, (var, EBool b):env, kont)
 
 -- Var lookup definition
+<<<<<<< HEAD
 step (Var exp, env, kont) = case lookup exp env of
+=======
+step (Var exp, env, kont) = case lookup var env of
+>>>>>>> 3eadf1cd474acf590e94fb404fec2983bfa32dfe
                             Just (Int a) -> step(Int a, env, kont)
                             Just (EBool b) -> step(EBool b, env, kont)
                             Nothing -> error "Variable not found"
