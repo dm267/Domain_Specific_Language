@@ -16,10 +16,7 @@ data Frames = Done | AddLK Holes Exp | AddRK Exp Holes
 createStream :: String -> [Stream] -> [Stream]
 createStream columnNumber stream
            | stream == [] = error "No Stream Input" 
-           | otherwise    = 
-
---Int expression evaluation
-step (Int a) env kont = (Int a)
+           | otherwise    =
 
 -- Add definition
 step (Add exp1 _, env, kont) = error "Wrong Input"
@@ -59,10 +56,6 @@ step (Int b, env, AddRK (Int a) HoleR:kont) = step (Int (a ^ b), env, kont)
 -- Negative definition
 step (Negative exp1, env, kont) = step (exp1, env, kont)
 step (Int a, env,  kont) = step (Int (-a), env, kont)
-
-
---Bool expression evaluation
-step (EBool b) env kont = EBool b 
 
 -- Equivalent definition
 step (Equivalent exp1 _, env, kont) = error "Wrong Input"
@@ -132,6 +125,9 @@ step (Int a, env, AddLK HoleL exp2:kont) = step (exp2, env, AddRK (Int a) HoleR:
 step (Int b, env, AddRK (Int a) HoleR:kont) = step (Int (a || b), env, kont)
 step (EBool a, env, AddLK HoleL exp2:kont) = step (exp2, env, AddRK (Int a) HoleR:kont)
 step (EBool b, env, AddRK (Int a) HoleR:kont) = step (Int (a || b), env, kont)
+
+-- lowest level of evaluation for primitives
+step state = state
 
 
 -- Entry point for execution
