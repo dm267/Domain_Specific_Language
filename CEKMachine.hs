@@ -115,11 +115,15 @@ step (EBool b, env, RK (EBool a) HoleR:kont) = step (EBool (a || b), env, kont)
 step (End exp1 exp2, env, kont) = step (exp1, env, EndK exp2:kont)
 step (exp1, env, EndK exp2:kont) = step (exp2, env, kont)
 
-
-
--- lowest level of evaluation for primitives
+-- Lowest level of evaluation for primitives
 step state = state
 
+-- Evaluates the program and returns a final expression
+evalProg :: Exp -> Exp
+evalProg p = unwrap $ fst $ step(exp, [], [Done])
+    where
+    unwrap Int a = a
+    unwrap EBool b = b
 
 
 -- Entry point for execution
