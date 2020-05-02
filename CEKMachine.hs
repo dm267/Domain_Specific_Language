@@ -9,7 +9,7 @@ type State = (Exp, Env, Kont)
 type Stream = []
 
 data Holes = HoleL | HoleR deriving Show
-data Frames = Done | IfK Exp Exp | WhileK Exp | AssignmentK String | LK Holes Exp | RK Exp Holes | NotK Exp | NegativeK Exp | EndK deriving Show
+data Frames = Done | IfK Exp Exp | WhileK Exp | AssignmentK String | LK Holes Exp | RK Exp Holes | NotK Exp | NegativeK Exp | EndK Exp deriving Show
 
 -- EIf definition
 step (EIf cond stmt1 stmt2, env, kont) = step(cond, env, IfK stmt1 stmt2: kont)
@@ -111,11 +111,14 @@ step (Or exp1 exp2, env, kont) = step (exp1, env, LK HoleL exp2:kont)
 step (EBool a, env, LK HoleL exp2:kont) = step (exp2, env, RK (EBool a) HoleR:kont)
 step (EBool b, env, RK (EBool a) HoleR:kont) = step (EBool (a || b), env, kont)
 
+-- End Expression definition
+step (End exp1 exp2, env, kont) = step (exp1, env, EndK exp2:kont)
+step (exp1, env, EndK exp2:kont) = step (exp2, env, kont)
+
+
 
 -- lowest level of evaluation for primitives
 step state = state
-
-
 
 
 
