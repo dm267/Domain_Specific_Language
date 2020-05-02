@@ -27,7 +27,7 @@ step (Int a, env, AssignmentK var:kont) = step(exp, (var, Int a):env, kont)
 step (EBool b, env, AssignmentK var:kont) = step(exp, (var, EBool b):env, kont)
 
 -- Var lookup definition
-step (Var exp, env, kont) = case lookup var env of
+step (Var exp, env, kont) = case lookup exp env of
                             Just (Int a) -> step(Int a, env, kont)
                             Just (EBool b) -> step(EBool b, env, kont)
                             Nothing -> error "Variable not found"
