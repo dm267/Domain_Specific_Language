@@ -33,6 +33,12 @@ step (EAssignment var exp, env, kont) = step(exp, env, AssignmentK var: kont)
 step (Int a, env, AssignmentK var:kont) = step(exp, (var, Int a):env, kont)
 step (EBool b, env, AssignmentK var:kont) = step(exp, (var, EBool b):env, kont)
 
+-- Var lookup definition
+step (Var exp, env, kont) = case lookup var env of
+                            Just (Int a) -> step(Int a, env, kont)
+                            Just (EBool b) -> step(EBool b, env, kont)
+                            Nothing -> error "Variable not found"
+
 -- Add definition
 step (Add exp1 _, env, kont) = error "Wrong Input"
 step (Add _ exp2, env, kont) = error "Wrong Input"
