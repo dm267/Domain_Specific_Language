@@ -6,14 +6,15 @@ import Grammar
 type Env = [(String,Exp)]
 type Kont = [Frames]
 type State = (Exp, Env, Kont)
-type Stream = []
+
+type Stream = (Int,[Int])
 
 data Holes = HoleL | HoleR deriving Show
 data Frames = Done | IfK Exp Exp | WhileK Exp | AssignmentK String | LK Holes Exp | RK Exp Holes | NotK Exp | NegativeK Exp | EndK Exp | PrintK Exp deriving Show
 
 
 -- step Defintion
---step :: Exp -> Env -> Kont -> (Exp, Env, Kont)
+step :: State -> IO()
 
 -- EIf definition
 step (EIf cond stmt1 stmt2, env, kont) = step(cond, env, IfK stmt1 stmt2: kont)
