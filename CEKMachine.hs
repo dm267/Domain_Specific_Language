@@ -56,8 +56,8 @@ step (Exponential exp1 exp2, env, kont) = step (exp1, env, AddLK HoleL exp2:kont
 step (Int a, env, AddLK HoleL exp2:kont) = step (exp2, env, AddRK (Int a) HoleR:kont)
 step (Int b, env, AddRK (Int a) HoleR:kont) = step (Int (a ^ b), env, kont)
 
--- Negate definition
-step (Negate exp1, env, kont) = step (exp1, env, kont)
+-- Negative definition
+step (Negative exp1, env, kont) = step (exp1, env, kont)
 step (Int a, env,  kont) = step (Int (-a), env, kont)
 
 
