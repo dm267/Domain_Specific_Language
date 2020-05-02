@@ -9,7 +9,7 @@ type State = (Exp, Env, Kont)
 type Stream = []
 
 data Holes = HoleL | HoleR deriving Show
-data Frames = Done | IfK Exp Exp | WhileK Exp | AssignmentK String | AddLK Holes Exp | AddRK Exp Holes | NotK Exp | NegativeK Exp deriving Show
+data Frames = Done | IfK Exp Exp | WhileK Exp | AssignmentK String | LK Holes Exp | RK Exp Holes | NotK Exp | NegativeK Exp | EndK deriving Show
 
 -- EIf definition
 step (EIf cond stmt1 stmt2, env, kont) = step(cond, env, IfK stmt1 stmt2: kont)
@@ -33,44 +33,44 @@ step (Var exp, env, kont) = case lookup exp env of
                             Nothing -> error "Variable not found"
 
 -- Add definition
-step (Add exp1 exp2, env, kont) = step (exp1, env, AddLK HoleL exp2:kont)
-step (Int a, env, AddLK HoleL exp2:kont) = step (exp2, env, AddRK (Int a) HoleR:kont)
-step (Int b, env, AddRK (Int a) HoleR:kont) = step (Int (a + b), env, kont)
+step (Add exp1 exp2, env, kont) = step (exp1, env, LK HoleL exp2:kont)
+step (Int a, env, LK HoleL exp2:kont) = step (exp2, env, RK (Int a) HoleR:kont)
+step (Int b, env, RK (Int a) HoleR:kont) = step (Int (a + b), env, kont)
 
 
 -- Minus definition
-step (Minus exp1 exp2, env, kont) = step (exp1, env, AddLK HoleL exp2:kont)
-step (Int a, env, AddLK HoleL exp2:kont) = step (exp2, env, AddRK (Int a) HoleR:kont)
-step (Int b, env, AddRK (Int a) HoleR:kont) = step (Int (a - b), env, kont)
+step (Minus exp1 exp2, env, kont) = step (exp1, env, LK HoleL exp2:kont)
+step (Int a, env, LK HoleL exp2:kont) = step (exp2, env, RK (Int a) HoleR:kont)
+step (Int b, env, RK (Int a) HoleR:kont) = step (Int (a - b), env, kont)
 
 
 -- Multiply definition
-step (Multiply exp1 exp2, env, kont) = step (exp1, env, AddLK HoleL exp2:kont)
-step (Int a, env, AddLK HoleL exp2:kont) = step (exp2, env, AddRK (Int a) HoleR:kont)
-step (Int b, env, AddRK (Int a) HoleR:kont) = step (Int (a * b), env, kont)
+step (Multiply exp1 exp2, env, kont) = step (exp1, env, LK HoleL exp2:kont)
+step (Int a, env, LK HoleL exp2:kont) = step (exp2, env, RK (Int a) HoleR:kont)
+step (Int b, env, RK (Int a) HoleR:kont) = step (Int (a * b), env, kont)
 
 
 -- Divide definition
-step (Divide exp1 exp2, env, kont) = step (exp1, env, AddLK HoleL exp2:kont)
-step (Int a, env, AddLK HoleL exp2:kont) = step (exp2, env, AddRK (Int a) HoleR:kont)
-step (Int b, env, AddRK (Int a) HoleR:kont) = step (Int (a `div` b), env, kont)
+step (Divide exp1 exp2, env, kont) = step (exp1, env, LK HoleL exp2:kont)
+step (Int a, env, LK HoleL exp2:kont) = step (exp2, env, RK (Int a) HoleR:kont)
+step (Int b, env, RK (Int a) HoleR:kont) = step (Int (a `div` b), env, kont)
 
 
 -- Exponential definition
-step (Exponential exp1 exp2, env, kont) = step (exp1, env, AddLK HoleL exp2:kont)
-step (Int a, env, AddLK HoleL exp2:kont) = step (exp2, env, AddRK (Int a) HoleR:kont)
-step (Int b, env, AddRK (Int a) HoleR:kont) = step (Int (a ^ b), env, kont)
+step (Exponential exp1 exp2, env, kont) = step (exp1, env, LK HoleL exp2:kont)
+step (Int a, env, LK HoleL exp2:kont) = step (exp2, env, RK (Int a) HoleR:kont)
+step (Int b, env, RK (Int a) HoleR:kont) = step (Int (a ^ b), env, kont)
 
 -- Negative definition
 step (Negative exp1, env, kont) = step (exp1, env, NegativeK exp1:kont)
 step (Int a, env, NegativeK exp1:kont) = step (Int (-a), env, kont)
 
 -- Equivalent definition
-step (Equivalent exp1 exp2, env, kont) = step (exp1, env, AddLK HoleL exp2:kont)
-step (Int a, env, AddLK HoleL exp2:kont) = step (exp2, env, AddRK (Int a) HoleR:kont)
-step (Int b, env, AddRK (Int a) HoleR:kont) = step (EBool (a == b), env, kont)
-step (EBool a, env, AddLK HoleL exp2:kont) = step (exp2, env, AddRK (EBool a) HoleR:kont)
-step (EBool b, env, AddRK (EBool a) HoleR:kont) = step (EBool (a == b), env, kont)
+step (Equivalent exp1 exp2, env, kont) = step (exp1, env, LK HoleL exp2:kont)
+step (Int a, env, LK HoleL exp2:kont) = step (exp2, env, RK (Int a) HoleR:kont)
+step (Int b, env, RK (Int a) HoleR:kont) = step (EBool (a == b), env, kont)
+step (EBool a, env, LK HoleL exp2:kont) = step (exp2, env, RK (EBool a) HoleR:kont)
+step (EBool b, env, RK (EBool a) HoleR:kont) = step (EBool (a == b), env, kont)
 
 
 -- Not definition
@@ -79,37 +79,37 @@ step (EBool a, env, NotK exp1:kont) = step (EBool (not a), env, kont)
 
 
 -- And definition
-step (And exp1 exp2, env, kont) = step (exp1, env, AddLK HoleL exp2:kont)
-step (EBool a, env, AddLK HoleL exp2:kont) = step (exp2, env, AddRK (EBool a) HoleR:kont)
-step (EBool b, env, AddRK (EBool a) HoleR:kont) = step (EBool (a && b), env, kont)
+step (And exp1 exp2, env, kont) = step (exp1, env, LK HoleL exp2:kont)
+step (EBool a, env, LK HoleL exp2:kont) = step (exp2, env, RK (EBool a) HoleR:kont)
+step (EBool b, env, RK (EBool a) HoleR:kont) = step (EBool (a && b), env, kont)
 
 
 -- Lesser definition
-step (Lesser exp1 exp2, env, kont) = step (exp1, env, AddLK HoleL exp2:kont)
-step (Int a, env, AddLK HoleL exp2:kont) = step (exp2, env, AddRK (Int a) HoleR:kont)
-step (Int b, env, AddRK (Int a) HoleR:kont) = step (EBool (a < b), env, kont)
+step (Lesser exp1 exp2, env, kont) = step (exp1, env, LK HoleL exp2:kont)
+step (Int a, env, LK HoleL exp2:kont) = step (exp2, env, RK (Int a) HoleR:kont)
+step (Int b, env, RK (Int a) HoleR:kont) = step (EBool (a < b), env, kont)
 
 
 -- Greater definition
-step (Greater exp1 exp2, env, kont) = step (exp1, env, AddLK HoleL exp2:kont)
-step (Int a, env, AddLK HoleL exp2:kont) = step (exp2, env, AddRK (Int a) HoleR:kont)
-step (Int b, env, AddRK (Int a) HoleR:kont) = step (EBool (a > b), env, kont)
+step (Greater exp1 exp2, env, kont) = step (exp1, env, LK HoleL exp2:kont)
+step (Int a, env, LK HoleL exp2:kont) = step (exp2, env, RK (Int a) HoleR:kont)
+step (Int b, env, RK (Int a) HoleR:kont) = step (EBool (a > b), env, kont)
 
 
 -- LesserEqual definition
-step (LesserEqual exp1 exp2, env, kont) = step (exp1, env, AddLK HoleL exp2:kont)
-step (Int a, env, AddLK HoleL exp2:kont) = step (exp2, env, AddRK (Int a) HoleR:kont)
-step (Int b, env, AddRK (Int a) HoleR:kont) = step (EBool (a <= b), env, kont)
+step (LesserEqual exp1 exp2, env, kont) = step (exp1, env, LK HoleL exp2:kont)
+step (Int a, env, LK HoleL exp2:kont) = step (exp2, env, RK (Int a) HoleR:kont)
+step (Int b, env, RK (Int a) HoleR:kont) = step (EBool (a <= b), env, kont)
 
 
 -- GreaterEqual definition
-step (GreaterEqual exp1 exp2, env, kont) = step (exp1, env, AddLK HoleL exp2:kont)
-step (Int a, env, AddLK HoleL exp2:kont) = step (exp2, env, AddRK (Int a) HoleR:kont)
+step (GreaterEqual exp1 exp2, env, kont) = step (exp1, env, LK HoleL exp2:kont)
+step (Int a, env, LK HoleL exp2:kont) = step (exp2, env, RK (Int a) HoleR:kont)
 
 -- Or definition
-step (Or exp1 exp2, env, kont) = step (exp1, env, AddLK HoleL exp2:kont)
-step (EBool a, env, AddLK HoleL exp2:kont) = step (exp2, env, AddRK (EBool a) HoleR:kont)
-step (EBool b, env, AddRK (EBool a) HoleR:kont) = step (EBool (a || b), env, kont)
+step (Or exp1 exp2, env, kont) = step (exp1, env, LK HoleL exp2:kont)
+step (EBool a, env, LK HoleL exp2:kont) = step (exp2, env, RK (EBool a) HoleR:kont)
+step (EBool b, env, RK (EBool a) HoleR:kont) = step (EBool (a || b), env, kont)
 
 
 -- lowest level of evaluation for primitives

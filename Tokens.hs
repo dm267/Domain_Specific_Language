@@ -511,7 +511,7 @@ alexScanTokens str0 = go (alexStartPos,'\n',[],str0)
 alex_tab_size :: Int
 alex_tab_size = 8
 alex_base :: Array Int Int
-alex_base = listArray (0 :: Int, 35)
+alex_base = listArray (0 :: Int, 36)
   [ -8
   , -73
   , 0
@@ -539,6 +539,7 @@ alex_base = listArray (0 :: Int, 35)
   , 0
   , -42
   , -41
+  , 0
   , 0
   , 0
   , 0
@@ -584,8 +585,8 @@ alex_table = listArray (0 :: Int, 989)
   , 0
   , 7
   , 12
-  , 30
   , 31
+  , 32
   , 22
   , 20
   , 12
@@ -603,7 +604,7 @@ alex_table = listArray (0 :: Int, 989)
   , 14
   , 14
   , 0
-  , 0
+  , 30
   , 25
   , 16
   , 26
@@ -635,9 +636,9 @@ alex_table = listArray (0 :: Int, 989)
   , 15
   , 15
   , 15
-  , 34
-  , 0
   , 35
+  , 0
+  , 36
   , 24
   , 0
   , 0
@@ -667,9 +668,9 @@ alex_table = listArray (0 :: Int, 989)
   , 15
   , 15
   , 15
-  , 32
-  , 29
   , 33
+  , 29
+  , 34
   , 9
   , -1
   , -1
@@ -1597,7 +1598,7 @@ alex_check = listArray (0 :: Int, 989)
   , 56
   , 57
   , -1
-  , -1
+  , 59
   , 60
   , 61
   , 62
@@ -2539,7 +2540,7 @@ alex_check = listArray (0 :: Int, 989)
   ]
 
 alex_deflt :: Array Int Int
-alex_deflt = listArray (0 :: Int, 35)
+alex_deflt = listArray (0 :: Int, 36)
   [ -1
   , 10
   , 10
@@ -2576,9 +2577,10 @@ alex_deflt = listArray (0 :: Int, 35)
   , -1
   , -1
   , -1
+  , -1
   ]
 
-alex_accept = listArray (0 :: Int, 35)
+alex_accept = listArray (0 :: Int, 36)
   [ AlexAccNone
   , AlexAccNone
   , AlexAccNone
@@ -2593,6 +2595,7 @@ alex_accept = listArray (0 :: Int, 35)
   , AlexAccSkip
   , AlexAccSkip
   , AlexAccSkip
+  , AlexAcc 22
   , AlexAcc 21
   , AlexAcc 20
   , AlexAcc 19
@@ -2617,32 +2620,33 @@ alex_accept = listArray (0 :: Int, 35)
   , AlexAcc 0
   ]
 
-alex_actions = array (0 :: Int, 22)
-  [ (21,alex_action_3)
-  , (20,alex_action_4)
-  , (19,alex_action_12)
-  , (18,alex_action_13)
-  , (17,alex_action_14)
-  , (16,alex_action_15)
-  , (15,alex_action_16)
-  , (14,alex_action_17)
-  , (13,alex_action_18)
-  , (12,alex_action_19)
-  , (11,alex_action_20)
-  , (10,alex_action_21)
-  , (9,alex_action_22)
-  , (8,alex_action_23)
-  , (7,alex_action_24)
-  , (6,alex_action_25)
-  , (5,alex_action_26)
-  , (4,alex_action_27)
-  , (3,alex_action_28)
-  , (2,alex_action_29)
-  , (1,alex_action_30)
-  , (0,alex_action_31)
+alex_actions = array (0 :: Int, 23)
+  [ (22,alex_action_3)
+  , (21,alex_action_4)
+  , (20,alex_action_12)
+  , (19,alex_action_13)
+  , (18,alex_action_14)
+  , (17,alex_action_15)
+  , (16,alex_action_16)
+  , (15,alex_action_17)
+  , (14,alex_action_18)
+  , (13,alex_action_19)
+  , (12,alex_action_20)
+  , (11,alex_action_21)
+  , (10,alex_action_22)
+  , (9,alex_action_23)
+  , (8,alex_action_24)
+  , (7,alex_action_25)
+  , (6,alex_action_26)
+  , (5,alex_action_27)
+  , (4,alex_action_28)
+  , (3,alex_action_29)
+  , (2,alex_action_30)
+  , (1,alex_action_31)
+  , (0,alex_action_32)
   ]
 
-{-# LINE 63 "Tokens.x" #-}
+{-# LINE 64 "Tokens.x" #-}
  
 -- Each action has type :: AlexPosn -> String -> Token 
 -- Helper Function
@@ -2675,6 +2679,7 @@ data Token =
   TokenLesserEqual AlexPosn    |
   TokenGreaterEqual AlexPosn   |
   TokenOr AlexPosn             |
+  TokenEndExp AlexPosn         |
   TokenLeftParen AlexPosn      |
   TokenRightParen AlexPosn     |
   TokenLeftBrace AlexPosn      |
@@ -2709,6 +2714,7 @@ tokenPosn (TokenGreater (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLesserEqual (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenGreaterEqual (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenOr (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenEndExp (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLeftParen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenRightParen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLeftBrace (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
@@ -2743,12 +2749,13 @@ alex_action_22 =  tok (\p s -> TokenGreater p)
 alex_action_23 =  tok (\p s -> TokenLesserEqual p) 
 alex_action_24 =  tok (\p s -> TokenGreaterEqual p) 
 alex_action_25 =  tok (\p s -> TokenOr p) 
-alex_action_26 =  tok (\p s -> TokenLeftParen p) 
-alex_action_27 =  tok (\p s -> TokenRightParen p) 
-alex_action_28 =  tok (\p s -> TokenLeftBrace p) 
-alex_action_29 =  tok (\p s -> TokenRightBrace p) 
-alex_action_30 =  tok (\p s -> TokenStreamStart p) 
-alex_action_31 =  tok (\p s -> TokenStreamEnd p) 
+alex_action_26 =  tok (\p s -> TokenEndExp p) 
+alex_action_27 =  tok (\p s -> TokenLeftParen p) 
+alex_action_28 =  tok (\p s -> TokenRightParen p) 
+alex_action_29 =  tok (\p s -> TokenLeftBrace p) 
+alex_action_30 =  tok (\p s -> TokenRightBrace p) 
+alex_action_31 =  tok (\p s -> TokenStreamStart p) 
+alex_action_32 =  tok (\p s -> TokenStreamEnd p) 
 {-# LINE 1 "templates/GenericTemplate.hs" #-}
 -- -----------------------------------------------------------------------------
 -- ALEX TEMPLATE

@@ -53,6 +53,7 @@ tokens :-
   \<=                           { tok (\p s -> TokenLesserEqual p) }
   \>=                           { tok (\p s -> TokenGreaterEqual p) }
   \|                            { tok (\p s -> TokenOr p) }
+  \;                            { tok (\p s -> TokenEndExp p) }
   \(                            { tok (\p s -> TokenLeftParen p) }
   \)                            { tok (\p s -> TokenRightParen p) }
   \{                            { tok (\p s -> TokenLeftBrace p) }
@@ -92,6 +93,7 @@ data Token =
   TokenLesserEqual AlexPosn    |
   TokenGreaterEqual AlexPosn   |
   TokenOr AlexPosn             |
+  TokenEndExp AlexPosn         |
   TokenLeftParen AlexPosn      |
   TokenRightParen AlexPosn     |
   TokenLeftBrace AlexPosn      |
@@ -126,6 +128,7 @@ tokenPosn (TokenGreater (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLesserEqual (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenGreaterEqual (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenOr (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenEndExp (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLeftParen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenRightParen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLeftBrace (AlexPn a l c)) = show(l) ++ ":" ++ show(c)

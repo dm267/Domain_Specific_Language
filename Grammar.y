@@ -36,6 +36,7 @@ import Tokens
    '<='    { TokenLesserEqual _ }
    '>='    { TokenGreaterEqual  _ }
    '|'     { TokenOr _ }
+   ';'     { TokenEndExp _ }
    '('     { TokenLeftParen _ } 
    ')'     { TokenRightParen _ }
 
@@ -88,6 +89,7 @@ Exp :
     | If '(' Exp ')' Then Exp Else Exp       { EIf $3 $6 $8}
     | Print Exp                              { EPrint $2}
     | While '(' Exp ')' Then Exp             { EWhile $3 $6}
+    | Exp ';'                                { End $1 }
     | var '=' Exp                            { EAssignment $1 $3}
     | '(' Exp ')'                            { $2 }
 
@@ -119,6 +121,7 @@ data Exp = Int Int
          | EIf Exp Exp Exp
          | EPrint Exp
          | EWhile Exp Exp
+         | End Exp
          | EAssignment String Exp
          deriving (Show,Eq)
 
