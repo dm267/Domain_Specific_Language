@@ -67,15 +67,6 @@ import Tokens
 --            | Productions Production  { $2 : $1 }
 
 
-Exp2 :
-     {- empty -}           { [] }
-     | Exp2 Exp1           { $2 : $1 }
-     
-
-Exp1 :
-     While '(' Exp ')' Then Exp1            { EWhile $3 $6}
-     | var '=' Exp                          { EAssignment $1 $3}
-
 Exp :
     int                                      { Int $1 } 
     | True                                   { EBool True }
@@ -94,8 +85,10 @@ Exp :
     | Exp '<=' Exp                           { LesserEqual $1 $3 }
     | Exp '>=' Exp                           { GreaterEqual $1 $3 }
     | Exp '|' Exp                            { Or $1 $3 }
-    | If '(' Exp ')' Then Exp1 Else Exp1     { EIf $3 $6 $8}
+    | If '(' Exp ')' Then Exp Else Exp       { EIf $3 $6 $8}
     | Print Exp                              { EPrint $2}
+    | While '(' Exp ')' Then Exp             { EWhile $3 $6}
+    | var '=' Exp                            { EAssignment $1 $3}
     | '(' Exp ')'                            { $2 }
 
 { 
@@ -106,6 +99,7 @@ parseError (t:ts) = error ("Parse error at line:column " ++ (tokenPosn t))
 
 
 data Exp = Int Int
+         | String
          | Var String
          | EBool Bool
          | Equivalent Exp Exp
@@ -122,12 +116,10 @@ data Exp = Int Int
          | LesserEqual Exp Exp
          | GreaterEqual Exp Exp         
          | Or Exp Exp
-         | EIf Exp Exp1 Exp1
+         | EIf Exp Exp Exp
          | EPrint Exp
-         deriving (Show,Eq) 
-		 
-data Exp1 = EWhile Exp Exp1
-          | EAssignment String Exp
-          deriving (Show,Eq)
-		  
+         | EWhile Exp Exp
+         | EAssignment String Exp
+         deriving (Show,Eq)
+
 }
