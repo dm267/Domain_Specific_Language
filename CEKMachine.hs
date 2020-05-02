@@ -9,7 +9,7 @@ type State = (Exp, Env, Kont)
 type Stream = []
 
 data Holes = HoleL | HoleR deriving Show
-data Frames = Done | IfK Exp Exp | WhileK Exp | AssignmentK String | LK Holes Exp | RK Exp Holes | NotK Exp | NegativeK Exp | EndK Exp deriving Show
+data Frames = Done | IfK Exp Exp | WhileK Exp | AssignmentK String | LK Holes Exp | RK Exp Holes | NotK Exp | NegativeK Exp | EndK Exp | PrintK Exp deriving Show
 
 
 -- step Defintion
@@ -119,6 +119,12 @@ step (EBool b, env, RK (EBool a) HoleR:kont) = step (EBool (a || b), env, kont)
 step (End exp1 exp2, env, kont) = step (exp1, env, EndK exp2:kont)
 step (exp1, env, EndK exp2:kont) = step (exp2, env, kont)
 
+-- Print Expression definition
+step (EPrint exp1, env, kont) = step (exp1, env, PrintK exp1:kont)
+step (EBool a, env, PrintK exp1:kont) = (step (EBool a, env, kont))
+step (EString a, env, PrintK exp1:kont) = (step (EString a, env, kont))
+step (EInt a, env, PrintK exp1:kont) = (step (EInt a, env, kont))
+
 -- Lowest level of evaluation for primitives
 step state = state
 
@@ -130,7 +136,6 @@ evalProg exp =  unwrap ((\(a,_,_) -> a) (step(exp, [], [Done])))
 unwrap (EInt a) = show a
 unwrap (EString a) = show a
 unwrap (EBool a) = show a
-
 
 
 -- Entry poEInt for execution
