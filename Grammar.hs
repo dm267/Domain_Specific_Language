@@ -631,7 +631,7 @@ action_57 _ = happyReduce_18
 happyReduce_1 = happySpecReduce_1  4 happyReduction_1
 happyReduction_1 (HappyTerminal (TokenInt _ happy_var_1))
 	 =  HappyAbsSyn4
-		 (Int happy_var_1
+		 (EInt happy_var_1
 	)
 happyReduction_1 _  = notHappyAtAll 
 
@@ -904,8 +904,8 @@ parseError [] = error "Unknown Parse Error"
 parseError (t:ts) = error ("Parse error at line:column " ++ (tokenPosn t))
 
 
-data Exp = Int Int
-         | String
+data Exp = EInt Int
+         | EString String
          | Var String
          | EBool Bool
          | Equivalent Exp Exp

@@ -69,7 +69,7 @@ import Tokens
 
 
 Exp :
-    int                                      { Int $1 } 
+    int                                      { EInt $1 }
     | True                                   { EBool True }
     | False                                  { EBool False }
     | Exp '==' Exp                           { Equivalent $1 $3 }
@@ -100,8 +100,8 @@ parseError [] = error "Unknown Parse Error"
 parseError (t:ts) = error ("Parse error at line:column " ++ (tokenPosn t))
 
 
-data Exp = Int Int
-         | String
+data Exp = EInt Int
+         | EString String
          | Var String
          | EBool Bool
          | Equivalent Exp Exp
