@@ -29,21 +29,15 @@ import Tokens
    '+'     { TokenAdd _ }
    '-'     { TokenMinus _ }
    '*'     { TokenMultiply _ }
-   '/'     { TokenDivision _ }
+   '/'     { TokenDivide _ }
    '^'     { TokenExponential _ }
-   '<'     { TokenLess _ }
-   '>'     { TokenGreat _ }
-   '<='    { TokenLessEq _ }
-   '>='    { TokenGreatEq _ }
+   '<'     { TokenLesser _ }
+   '>'     { TokenGreater _ }
+   '<='    { TokenLesserEqual _ }
+   '>='    { TokenGreaterEqual  _ }
    '|'     { TokenOr _ }
---   ';'     { TokenSeq _ } --unused terminal
    '('     { TokenLeftParen _ } 
    ')'     { TokenRightParen _ }
---   '{'     { TokenLeftBrace _ } --unused terminal
---   '}'     { TokenRightBrace _ } --unused terminal
---   '['     { TokenStreamStart _ } --unused terminal
---   ']'     { TokenStreamEnd _ } --unused terminal
---   ZERO    { TokenZero _ ZeroT }
 
 
 --Associatives, when on same level it means they have same power
@@ -79,31 +73,30 @@ Exp2 :
      
 
 Exp1 :
-     If '(' Exp ')' Then Exp1 Else Exp1     { EIf $3 $6 $8}
-     | While '(' Exp1 ')' Then Exp          { EWhile $3 $6}
-	 | Print Exp                            { EPrint $2}
+     While '(' Exp ')' Then Exp1            { EWhile $3 $6}
      | var '=' Exp                          { EAssignment $1 $3}
 
 Exp :
-    int                          { Int $1 } 
-    | var                        { Var $1 }
-    | True                       { EBool True }
-    | False                      { EBool False }
-    | Exp '==' Exp               { Equivalent $1 $3 }
-    | '!' Exp                    { Not $2 }
-    | Exp '&&' Exp               { And $1 $3 }
-    | '-' Exp %prec NEG          { Negative $2 }
-    | Exp '+' Exp                { Add $1 $3 } 
-    | Exp '-' Exp                { Minus $1 $3 } 
-    | Exp '*' Exp                { Multiply $1 $3 } 
-    | Exp '/' Exp                { Divide $1 $3 } 
-    | Exp '^' Exp                { Exponential $1 $3 }
-    | Exp '<' Exp                { Lesser $1 $3 }
-    | Exp '>' Exp                { Greater $1 $3 }
-    | Exp '<=' Exp               { LesserEqual $1 $3 }
-    | Exp '>=' Exp               { GreaterEqual $1 $3 }
-    | Exp '|' Exp                { Or $1 $3 }
-    | '(' Exp ')'                { $2 }
+    int                                      { Int $1 } 
+    | True                                   { EBool True }
+    | False                                  { EBool False }
+    | Exp '==' Exp                           { Equivalent $1 $3 }
+    | '!' Exp                                { Not $2 }
+    | Exp '&&' Exp                           { And $1 $3 }
+    | '-' Exp %prec NEG                      { Negative $2 }
+    | Exp '+' Exp                            { Add $1 $3 } 
+    | Exp '-' Exp                            { Minus $1 $3 } 
+    | Exp '*' Exp                            { Multiply $1 $3 } 
+    | Exp '/' Exp                            { Divide $1 $3 } 
+    | Exp '^' Exp                            { Exponential $1 $3 }
+    | Exp '<' Exp                            { Lesser $1 $3 }
+    | Exp '>' Exp                            { Greater $1 $3 }
+    | Exp '<=' Exp                           { LesserEqual $1 $3 }
+    | Exp '>=' Exp                           { GreaterEqual $1 $3 }
+    | Exp '|' Exp                            { Or $1 $3 }
+    | If '(' Exp ')' Then Exp1 Else Exp1     { EIf $3 $6 $8}
+    | Print Exp                              { EPrint $2}
+    | '(' Exp ')'                            { $2 }
 
 { 
 
@@ -112,9 +105,8 @@ parseError [] = error "Unknown Parse Error"
 parseError (t:ts) = error ("Parse error at line:column " ++ (tokenPosn t))
 
 
-
 data Exp = Int Int
-         | Var String 
+         | Var String
          | EBool Bool
          | Equivalent Exp Exp
          | Not Exp
@@ -130,15 +122,12 @@ data Exp = Int Int
          | LesserEqual Exp Exp
          | GreaterEqual Exp Exp         
          | Or Exp Exp
-         deriving (Show,Eq) 
-		 
-data Exp1 = Int 
          | EIf Exp Exp1 Exp1
-         | EWhile Exp Exp1
          | EPrint Exp
-         | EAssignment String Exp
          deriving (Show,Eq) 
-
-type Environment = [ (String,Expr) ]
 		 
-} 
+data Exp1 = EWhile Exp Exp1
+          | EAssignment String Exp
+          deriving (Show,Eq)
+		  
+}

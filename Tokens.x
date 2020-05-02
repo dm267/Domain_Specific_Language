@@ -30,8 +30,8 @@ tokens :-
   $eol                          ;
   $white+                       ; 
   "--".*                        ; 
-  $digit $digit+                { tok (\p s -> TokenInt p (read s)) } --one or more including 0
-  var                           { tok (\p s -> TokenVar p ) }
+  $digit+                       { tok (\p s -> TokenInt p (read s)) } --one or more including 0
+  $alpha [$alpha $digit]*       { tok (\p s -> TokenVar p s) }
   True                          { tok (\p s -> TokenTrue p) }
   False                         { tok (\p s -> TokenFalse p) } 
   If                            { tok (\p s -> TokenIf p) }
@@ -52,16 +52,13 @@ tokens :-
   \>                            { tok (\p s -> TokenGreater p) }
   \<=                           { tok (\p s -> TokenLesserEqual p) }
   \>=                           { tok (\p s -> TokenGreaterEqual p) }
-  \||                           { tok (\p s -> TokenOr p) }
---  \;                            { tok (\p s -> TokenSeq p)}
+  \|                            { tok (\p s -> TokenOr p) }
   \(                            { tok (\p s -> TokenLeftParen p) }
   \)                            { tok (\p s -> TokenRightParen p) }
   \{                            { tok (\p s -> TokenLeftBrace p) }
   \}                            { tok (\p s -> TokenRightBrace p) }
   \[                            { tok (\p s -> TokenStreamStart p) }
   \]                            { tok (\p s -> TokenStreamEnd p) }
---
---  \0                           { zero  }
 
 { 
 -- Each action has type :: AlexPosn -> String -> Token 
@@ -72,8 +69,8 @@ tok f p s = f p s
 -- Each action has type :: String -> Token
 -- Token Type: 
 data Token = 
-  TokenInt Int AlexPosn        |
-  TokenVar String AlexPosn     | 
+  TokenInt AlexPosn Int        |
+  TokenVar AlexPosn String     | 
   TokenTrue AlexPosn           |
   TokenFalse AlexPosn          |
   TokenIf AlexPosn             |
@@ -95,21 +92,19 @@ data Token =
   TokenLesserEqual AlexPosn    |
   TokenGreaterEqual AlexPosn   |
   TokenOr AlexPosn             |
---  TokenSeq AlexPosn            |
   TokenLeftParen AlexPosn      |
   TokenRightParen AlexPosn     |
   TokenLeftBrace AlexPosn      |
   TokenRightBrace AlexPosn     |
   TokenStreamStart AlexPosn    |
-  TokenStreamEnd AlexPosn      |
---  ZeroT
+  TokenStreamEnd AlexPosn
   deriving (Eq,Show) 
 
 
 --Token Functions
 tokenPosn :: Token -> String
-tokenPosn (TokenInt  (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenVar (AlexPn a l c) ) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenInt (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenVar (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenTrue (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenFalse (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenIf (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
@@ -124,21 +119,19 @@ tokenPosn (TokenAnd (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenAdd (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenMinus (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenMultiply (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenDiviide (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenDivide (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenExponential (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLesser (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenGreater (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLesserEqual (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenGreaterEqual (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenOr (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
---tokenPosn (TokenSeq (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLeftParen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenRightParen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLeftBrace (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenRightBrace (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenStreamStart (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenStreamEnd (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
---zero      (p,_,_)   _  = return $ T p ZeroT
 
 --skip :: Action
 --skip _ _ = lexToken
