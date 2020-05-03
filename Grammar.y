@@ -89,6 +89,11 @@ Exp :
     | If '(' Exp ')' Then Exp Else Exp       { EIf $3 $6 $8}
     | Print Exp                              { EPrint $2}
     | While '(' Exp ')' Then Exp             { EWhile $3 $6}
+    | incrementStream Exp                    { EIncS $2}
+    | reduceStream Exp                       { ERedS $2}
+    | getStream Exp                          { EGetS $2}
+    | Length Exp                             { ELen $2}
+    | Exp !!' Exp                            { EIndex $1 $3}
     | Exp ';' Exp                            { End $1 $3}
     | var '=' Exp                            { EAssignment $1 $3}
     | '(' Exp ')'                            { $2 }
@@ -121,6 +126,11 @@ data Exp = EInt Int
          | EIf Exp Exp Exp
          | EPrint Exp
          | EWhile Exp Exp
+         | EIncS Exp
+         | ERedS Exp
+         | EGetS Exp
+         | ELen Exp
+         | EIndex Exp Exp
          | End Exp Exp
          | EAssignment String Exp
          deriving (Show,Eq)

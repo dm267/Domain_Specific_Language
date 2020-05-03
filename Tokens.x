@@ -1,4 +1,4 @@
--- alex <inputfile> -o <outputfile>
+--alex <inputfile> -o <outputfile>
 
 { 
 module Tokens where 
@@ -32,6 +32,9 @@ tokens :-
   "--".*                        ; 
   $digit+                       { tok (\p s -> TokenInt p (read s)) } --one or more including 0
   $alpha [$alpha $digit]*       { tok (\p s -> TokenVar p s) }
+  incrementStream               { tok (\p s -> TokenIncrementS p) }   --get the next n instances
+  reduceStream                  { tok (\p s -> TokenReduceS p) }      --remove the oldest n instances
+  getStream                     { tok (\p s -> TokenGetS p) }         --return an array corresposing with a kont stream
   True                          { tok (\p s -> TokenTrue p) }
   False                         { tok (\p s -> TokenFalse p) } 
   If                            { tok (\p s -> TokenIf p) }
@@ -39,6 +42,8 @@ tokens :-
   Else                          { tok (\p s -> TokenElse p) }
   While                         { tok (\p s -> TokenWhile p) }
   Print                         { tok (\p s -> TokenPrint p) }
+  Length                        { tok (\p s -> TokenLength p) }       --returns length
+  \!!                           { tok (\p s -> TokenIndex p) }        --grabs index
   \=                            { tok (\p s -> TokenEqual p) }
   \==                           { tok (\p s -> TokenEquivalent p) }
   \!                            { tok (\p s -> TokenNot p) }
@@ -71,7 +76,10 @@ tok f p s = f p s
 -- Token Type: 
 data Token = 
   TokenInt AlexPosn Int        |
-  TokenVar AlexPosn String     | 
+  TokenVar AlexPosn String     |
+  TokenIncrementS AlexPosn     |
+  TokenReduceS AlexPosn        |
+  TokenGetS AlexPosn           |
   TokenTrue AlexPosn           |
   TokenFalse AlexPosn          |
   TokenIf AlexPosn             |
@@ -79,6 +87,8 @@ data Token =
   TokenElse AlexPosn           |
   TokenWhile AlexPosn          |
   TokenPrint AlexPosn          |
+  TokenLength AlexPosn         |
+  TokenIndex AlexPosn          |
   TokenEqual AlexPosn          |
   TokenEquivalent AlexPosn     |
   TokenNot AlexPosn            |
@@ -107,6 +117,9 @@ data Token =
 tokenPosn :: Token -> String
 tokenPosn (TokenInt (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenVar (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenIncrementS (AlexPn a l c) ) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenReduceS (AlexPn a l c) ) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenGetS (AlexPn a l c) ) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenTrue (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenFalse (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenIf (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
@@ -114,6 +127,8 @@ tokenPosn (TokenThen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenElse (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenWhile (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenPrint (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenLength (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenIndex (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenEqual (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenEquivalent (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenNot (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
