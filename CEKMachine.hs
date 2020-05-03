@@ -11,7 +11,7 @@ type State = (Exp, Env, Kont, Streams)
 type Streams = [[Int]]
 
 data Holes = HoleL | HoleR deriving Show
-data Frames = Done | IfK Exp Exp | WhileK Exp | AssignmentK String | LK Holes Exp | RK Exp Holes | NotK Exp | NegativeK Exp | EndK Exp | PrintK Exp deriving Show
+data Frames = Done | IfK Exp Exp | WhileK Exp | AssignmentK String | LK Holes Exp | RK Exp Holes | NotK Exp | NegativeK Exp | EndK Exp | PrintK Exp | IncSK Exp deriving Show
 
 -- Checks for terminated expressions
 isValue :: Exp -> Bool
@@ -134,14 +134,18 @@ step (Or exp1 exp2, env, kont, streams) = step (exp1, env, LK HoleL exp2:kont, s
 step (EBool a, env, LK HoleL exp2:kont, streams) = step (exp2, env, RK (EBool a) HoleR:kont, streams)
 step (EBool b, env, RK (EBool a) HoleR:kont, streams) = step (EBool (a || b), env, kont, streams)
 
--- End Expression definition
-step (End exp1 exp2, env, kont, streams) = step (exp1, env, EndK exp2:kont, streams)
-step (exp1, env, EndK exp2:kont, streams) = step (exp2, env, kont, streams)
-
 -- Print Expression definition
 step (EPrint exp1, env, kont, streams) = step (exp1, env, PrintK exp1:kont, streams)
 step (exp1, env, PrintK exp2:kont, streams) | isValue exp1 = do putStrLn $ id $ unwrap exp1
                                                                 step (exp1, env, kont, streams)
+
+-- Stream Increment definition
+step (EIncS exp1, env, kont, streams) = step(exp1, env, IncSK exp1: kont, streams)
+step (EInt a, env, IncSK exp1:kont, streams) = step(EInt a, env, kont, updateStreams(streams))
+
+-- End Expression definition MUST BE AT THE BOTTOM OF THE FILE ABOVE step State = pure state
+step (End exp1 exp2, env, kont, streams) = step (exp1, env, EndK exp2:kont, streams)
+step (exp1, env, EndK exp2:kont, streams) = step (exp2, env, kont, streams)
 
 -- Lowest level of evaluation for primitives
 step state = pure state
