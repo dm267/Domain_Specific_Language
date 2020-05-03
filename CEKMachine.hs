@@ -23,6 +23,10 @@ isValue _ = False
 -- Removes the first index from each stream
 reduceStreams = map tail
 
+updateStreamsN :: Int -> [[Int]] -> [[Int]]
+updateStreamsN 0 streams = streams
+updateStreamsN n streams = updateStreamsN (n-1) (updateStreams(streams))
+
 -- Reads a line from stdin and adds it to existing Streams
 updateStreams :: [[Int]] -> [[Int]]
 updateStreams streams
@@ -149,7 +153,7 @@ step (exp1, env, PrintK exp2:kont, streams) | isValue exp1 = do putStrLn $ id $ 
 
 -- Stream Increment definition
 step (EIncS exp1, env, kont, streams) = step(exp1, env, IncSK exp1: kont, streams)
-step (EInt a, env, IncSK exp1:kont, streams) = step(EInt a, env, kont, updateStreams(streams))
+step (EInt a, env, IncSK exp1:kont, streams) = step(EInt a, env, kont, updateStreamsN a streams)
 
 -- Stream Reduce Definition
 step (ERedS exp1, env, kont, streams) = step(exp1, env, RedSK exp1: kont, streams)
