@@ -1298,6 +1298,30 @@ data Exp = EInt Int
          | End Exp Exp
          | EAssignment String Exp
          deriving (Show,Eq)
+{-# LINE 1 "templates\GenericTemplate.hs" #-}
+{-# LINE 1 "templates\\\\GenericTemplate.hs" #-}
+{-# LINE 1 "<built-in>" #-}
+{-# LINE 1 "<command-line>" #-}
+{-# LINE 8 "<command-line>" #-}
+{-# LINE 1 "D:/GitHub/haskell-platform/build/ghc-bindist/local/lib/include/ghcversion.h" #-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{-# LINE 8 "<command-line>" #-}
+{-# LINE 1 "F:/Users/randy/AppData/Local/Temp/ghc1900_0/ghc_2.h" #-}
+
 
 
 
