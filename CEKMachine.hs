@@ -2,6 +2,7 @@ module CEKMachine where
 
 import Tokens
 import Grammar
+import System.IO.Unsafe (unsafePerformIO)
 
 type Env = [(String,Exp)]
 type Kont = [Frames]
@@ -18,6 +19,17 @@ isValue (EInt _) = True
 isValue (EBool _) = True
 isValue (EString _) = True
 isValue _ = False
+
+updateStreams :: [[Int]] -> [[Int]]
+updateStreams streams
+    | length streams == 0 = map (\x -> [x]) (unsafePerformIO readStdIn)
+    | otherwise = zipWith (\x y -> x ++ [y]) streams (unsafePerformIO readStdIn)
+
+readStdIn :: IO [Int]
+readStdIn = do x <- getLine
+               let newEntriesRaw = words x
+               let newEntries = map read newEntriesRaw
+               return newEntries
 
 -- step Defintion
 step :: State -> IO State
