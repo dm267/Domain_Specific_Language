@@ -13,32 +13,39 @@ import Tokens
 %error { parseError }
 
 %token 
-   int     { TokenInt _ $$ }
-   var     { TokenVar _ $$ }
-   True    { TokenTrue _ }
-   False   { TokenFalse _ }
-   If      { TokenIf _ } 
-   Then    { TokenThen _ } 
-   Else    { TokenElse _ }
-   While   { TokenWhile _ }
-   Print   { TokenPrint _ } 
-   '='     { TokenEqual _ }
-   '=='    { TokenEquivalent _ }
-   '!'     { TokenNot _ }
-   '&&'    { TokenAnd _ }
-   '+'     { TokenAdd _ }
-   '-'     { TokenMinus _ }
-   '*'     { TokenMultiply _ }
-   '/'     { TokenDivide _ }
-   '^'     { TokenExponential _ }
-   '<'     { TokenLesser _ }
-   '>'     { TokenGreater _ }
-   '<='    { TokenLesserEqual _ }
-   '>='    { TokenGreaterEqual  _ }
-   '|'     { TokenOr _ }
-   ';'     { TokenEndExp _ }
-   '('     { TokenLeftParen _ } 
-   ')'     { TokenRightParen _ }
+   int                { TokenInt _ $$ }
+   var                { TokenVar _ $$ }
+   True               { TokenTrue _ }
+   False              { TokenFalse _ }
+   If                 { TokenIf _ }
+   Then               { TokenThen _ }
+   Else               { TokenElse _ }
+   While              { TokenWhile _ }
+   Print              { TokenPrint _ }
+   incrementStream    { TokenIncrementS _ }
+   reduceStream       { TokenReduceS _ }
+   getStream          { TokenGetS _ }
+   Length             { TokenLength _ }
+   '!!'               { TokenIndex _ }
+   '='                { TokenEqual _ }
+   '=='               { TokenEquivalent _ }
+   '!'                { TokenNot _ }
+   '&&'               { TokenAnd _ }
+   '+'                { TokenAdd _ }
+   '-'                { TokenMinus _ }
+   '*'                { TokenMultiply _ }
+   '/'                { TokenDivide _ }
+   '^'                { TokenExponential _ }
+   '<'                { TokenLesser _ }
+   '>'                { TokenGreater _ }
+   '<='               { TokenLesserEqual _ }
+   '>='               { TokenGreaterEqual  _ }
+   '|'                { TokenOr _ }
+   ';'                { TokenEndExp _ }
+   '('                { TokenLeftParen _ }
+   ')'                { TokenRightParen _ }
+   '['                { TokenLeftBracket _ }
+   ']'                { TokenRightBracket _ }
 
 
 --Associatives, when on same level it means they have same power
@@ -92,11 +99,12 @@ Exp :
     | incrementStream '(' Exp ')'            { EIncS $3}
     | reduceStream '(' Exp ')'               { ERedS $3}
     | getStream '(' Exp ')'                  { EGetS $3}
-    | Length '[' Exp ']'                     { ELen $3}
+    | Length '(' Exp ')'                     { ELen $3}
     | Exp '!!' Exp                           { EIndex $1 $3}
     | Exp ';' Exp                            { End $1 $3}
     | var '=' Exp                            { EAssignment $1 $3}
     | '(' Exp ')'                            { $2 }
+
 
 { 
 

@@ -63,8 +63,8 @@ tokens :-
   \)                            { tok (\p s -> TokenRightParen p) }
   \{                            { tok (\p s -> TokenLeftBrace p) }
   \}                            { tok (\p s -> TokenRightBrace p) }
-  \[                            { tok (\p s -> TokenStreamStart p) }
-  \]                            { tok (\p s -> TokenStreamEnd p) }
+  \[                            { tok (\p s -> TokenLeftBracket p) }
+  \]                            { tok (\p s -> TokenRightBracket p) }
 
 { 
 -- Each action has type :: AlexPosn -> String -> Token 
@@ -108,8 +108,8 @@ data Token =
   TokenRightParen AlexPosn     |
   TokenLeftBrace AlexPosn      |
   TokenRightBrace AlexPosn     |
-  TokenStreamStart AlexPosn    |
-  TokenStreamEnd AlexPosn
+  TokenLeftBracket AlexPosn    |
+  TokenRightBracket AlexPosn
   deriving (Eq,Show) 
 
 
@@ -148,8 +148,8 @@ tokenPosn (TokenLeftParen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenRightParen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLeftBrace (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenRightBrace (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenStreamStart (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenStreamEnd (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenLeftBracket (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenRightBracket (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 
 --skip :: Action
 --skip _ _ = lexToken
