@@ -102,7 +102,7 @@ Exp :
     | getStream '(' Exp ',' Exp ')'          { EGetS $3 $5}
     | streamLength '(' Exp ')'               { ELenS $3}
     | Exp '!!' Exp                           { EIndex $1 $3}
-    | Exp ',' Exp                            { $1 $3}
+    | '(' Exp ',' Exp ')'                    { $1 $3}
     | Exp ';' Exp                            { End $1 $3}
     | var '=' Exp                            { EAssignment $1 $3}
     | '(' Exp ')'                            { $2 }
