@@ -2669,6 +2669,7 @@ data Token =
   TokenIncrementS AlexPosn     |
   TokenReduceS AlexPosn        |
   TokenGetS AlexPosn           |
+  TokenLengthS AlexPosn        |
   TokenTrue AlexPosn           |
   TokenFalse AlexPosn          |
   TokenIf AlexPosn             |
@@ -2676,7 +2677,6 @@ data Token =
   TokenElse AlexPosn           |
   TokenWhile AlexPosn          |
   TokenPrint AlexPosn          |
-  TokenLength AlexPosn         |
   TokenIndex AlexPosn          |
   TokenEqual AlexPosn          |
   TokenEquivalent AlexPosn     |
@@ -2710,6 +2710,7 @@ tokenPosn (TokenVar (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenIncrementS (AlexPn a l c) ) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenReduceS (AlexPn a l c) ) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenGetS (AlexPn a l c) ) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenLengthS (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenTrue (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenFalse (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenIf (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
@@ -2717,7 +2718,6 @@ tokenPosn (TokenThen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenElse (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenWhile (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenPrint (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenLength (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenIndex (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenEqual (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenEquivalent (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
@@ -2751,14 +2751,14 @@ alex_action_4 =  tok (\p s -> TokenVar p s)
 alex_action_5 =  tok (\p s -> TokenIncrementS p) 
 alex_action_6 =  tok (\p s -> TokenReduceS p) 
 alex_action_7 =  tok (\p s -> TokenGetS p) 
-alex_action_8 =  tok (\p s -> TokenTrue p) 
-alex_action_9 =  tok (\p s -> TokenFalse p) 
-alex_action_10 =  tok (\p s -> TokenIf p) 
-alex_action_11 =  tok (\p s -> TokenThen p) 
-alex_action_12 =  tok (\p s -> TokenElse p) 
-alex_action_13 =  tok (\p s -> TokenWhile p) 
-alex_action_14 =  tok (\p s -> TokenPrint p) 
-alex_action_15 =  tok (\p s -> TokenLength p) 
+alex_action_8 =  tok (\p s -> TokenLengthS p) 
+alex_action_9 =  tok (\p s -> TokenTrue p) 
+alex_action_10 =  tok (\p s -> TokenFalse p) 
+alex_action_11 =  tok (\p s -> TokenIf p) 
+alex_action_12 =  tok (\p s -> TokenThen p) 
+alex_action_13 =  tok (\p s -> TokenElse p) 
+alex_action_14 =  tok (\p s -> TokenWhile p) 
+alex_action_15 =  tok (\p s -> TokenPrint p) 
 alex_action_16 =  tok (\p s -> TokenIndex p) 
 alex_action_17 =  tok (\p s -> TokenEqual p) 
 alex_action_18 =  tok (\p s -> TokenEquivalent p) 

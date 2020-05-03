@@ -25,7 +25,7 @@ import Tokens
    incrementStream    { TokenIncrementS _ }
    reduceStream       { TokenReduceS _ }
    getStream          { TokenGetS _ }
-   Length             { TokenLength _ }
+   streamLength       { TokenLengthS _ }
    '!!'               { TokenIndex _ }
    '='                { TokenEqual _ }
    '=='               { TokenEquivalent _ }
@@ -100,7 +100,7 @@ Exp :
     | incrementStream '(' Exp ')'            { EIncS $3}
     | reduceStream '(' Exp ')'               { ERedS $3}
     | getStream '(' Exp ',' Exp ')'          { EGetS $3 $5}
-    | Length '(' Exp ')'                     { ELen $3}
+    | streamLength '(' Exp ')'               { ELenS $3}
     | Exp '!!' Exp                           { EIndex $1 $3}
     | Exp ',' Exp                            { $1 $3}
     | Exp ';' Exp                            { End $1 $3}
@@ -139,7 +139,7 @@ data Exp = EInt Int
          | EIncS Exp
          | ERedS Exp
          | EGetS Exp Exp
-         | ELen Exp
+         | ELenS Exp
          | EIndex Exp Exp
          | End Exp Exp
          | EAssignment String Exp

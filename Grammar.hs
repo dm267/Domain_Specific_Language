@@ -20,7 +20,7 @@ happyExpList = Happy_Data_Array.listArray (0,332) ([63984,145,2052,0,0,0,0,0,648
 {-# NOINLINE happyExpListPerState #-}
 happyExpListPerState st =
     token_strs_expected
-  where token_strs = ["error","%dummy","%start_parseCalc","Exp","int","var","True","False","If","Then","Else","While","Print","incrementStream","reduceStream","getStream","Length","'!!'","'='","'=='","'!'","'&&'","'+'","'-'","'*'","'/'","'^'","'<'","'>'","'<='","'>='","'|'","','","';'","'('","')'","'['","']'","%eof"]
+  where token_strs = ["error","%dummy","%start_parseCalc","Exp","int","var","True","False","If","Then","Else","While","Print","incrementStream","reduceStream","getStream","streamLength","'!!'","'='","'=='","'!'","'&&'","'+'","'-'","'*'","'/'","'^'","'<'","'>'","'<='","'>='","'|'","','","';'","'('","')'","'['","']'","%eof"]
         bit_start = st * 39
         bit_end = (st + 1) * 39
         read_bit = readArrayBit happyExpList
@@ -1250,7 +1250,7 @@ happyReduction_24 (_ `HappyStk`
 	_ `HappyStk`
 	happyRest)
 	 = HappyAbsSyn4
-		 (ELen happy_var_3
+		 (ELenS happy_var_3
 	) `HappyStk` happyRest
 
 happyReduce_25 = happySpecReduce_3  4 happyReduction_25
@@ -1316,7 +1316,7 @@ happyNewToken action sts stk (tk:tks) =
 	TokenIncrementS _ -> cont 14;
 	TokenReduceS _ -> cont 15;
 	TokenGetS _ -> cont 16;
-	TokenLength _ -> cont 17;
+	TokenLengthS _ -> cont 17;
 	TokenIndex _ -> cont 18;
 	TokenEqual _ -> cont 19;
 	TokenEquivalent _ -> cont 20;
@@ -1402,7 +1402,7 @@ data Exp = EInt Int
          | EIncS Exp
          | ERedS Exp
          | EGetS Exp Exp
-         | ELen Exp
+         | ELenS Exp
          | EIndex Exp Exp
          | End Exp Exp
          | EAssignment String Exp

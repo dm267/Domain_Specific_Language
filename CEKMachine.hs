@@ -156,7 +156,7 @@ step (End exp1 exp2, env, kont, streams) = step (exp1, env, EndK exp2:kont, stre
 step (exp1, env, EndK exp2:kont, streams) = step (exp2, env, kont, streams)
 
 -- Lowest level of evaluation for primitives
-step state = pure state
+step state = return state
 
 
 --Unwraps pure to value
