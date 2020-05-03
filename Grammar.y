@@ -89,11 +89,11 @@ Exp :
     | If '(' Exp ')' Then Exp Else Exp       { EIf $3 $6 $8}
     | Print Exp                              { EPrint $2}
     | While '(' Exp ')' Then Exp             { EWhile $3 $6}
-    | incrementStream Exp                    { EIncS $2}
-    | reduceStream Exp                       { ERedS $2}
-    | getStream Exp                          { EGetS $2}
-    | Length Exp                             { ELen $2}
-    | Exp '!!' Exp                            { EIndex $1 $3}
+    | incrementStream '(' Exp ')'            { EIncS $3}
+    | reduceStream '(' Exp ')'               { ERedS $3}
+    | getStream '(' Exp ')'                  { EGetS $3}
+    | Length '[' Exp ']'                     { ELen $3}
+    | Exp '!!' Exp                           { EIndex $1 $3}
     | Exp ';' Exp                            { End $1 $3}
     | var '=' Exp                            { EAssignment $1 $3}
     | '(' Exp ')'                            { $2 }
