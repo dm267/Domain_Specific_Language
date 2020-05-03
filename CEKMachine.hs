@@ -11,7 +11,7 @@ type State = (Exp, Env, Kont, Streams)
 type Streams = [[Int]]
 
 data Holes = HoleL | HoleR deriving Show
-data Frames = Done | IfK Exp Exp | WhileK Exp | AssignmentK String | LK Holes Exp | RK Exp Holes | NotK Exp | NegativeK Exp | EndK Exp | PrintK Exp | IncSK Exp | RedSK Exp | LenK Exp deriving Show
+data Frames = Done | IfK Exp Exp | WhileK Exp | AssignmentK String | LK Holes Exp | RK Exp Holes | NotK Exp | NegativeK Exp | EndK Exp | PrintK Exp | IncSK Exp | RedSK Exp | LenK Exp | GetLK Holes Exp | GetRK Exp Holes deriving Show
 
 -- Checks for terminated expressions
 isValue :: Exp -> Bool
@@ -154,6 +154,11 @@ step (EInt a, env, IncSK exp1:kont, streams) = step(EInt a, env, kont, updateStr
 -- Stream Reduce Definition
 step (ERedS exp1, env, kont, streams) = step(exp1, env, RedSK exp1: kont, streams)
 step (EInt a, env, RedSK exp1:kont, streams) = step(EInt a, env, kont, reduceStreams(streams))
+
+-- Stream Get Definition
+step (EGetS exp1 exp2, env, kont, streams) = step(exp1, env, GetLK HoleL exp2: kont, streams)
+step (EInt a, env, GetLK HoleL exp2:kont, streams) = step(exp2, env, GetRK (EInt a) HoleR:kont, streams)
+step (EInt b, env, GetRK (EInt a) HoleR:kont, streams) = step(EInt (streams !! a !! b), env, kont, streams)
 
 -- Length Definition
 step (ELenS exp1, env, kont, streams) = step(exp1, env, LenK exp1: kont, streams)
