@@ -12,9 +12,15 @@ type Stream = (Int,[Int])
 data Holes = HoleL | HoleR deriving Show
 data Frames = Done | IfK Exp Exp | WhileK Exp | AssignmentK String | LK Holes Exp | RK Exp Holes | NotK Exp | NegativeK Exp | EndK Exp | PrintK Exp deriving Show
 
+-- Checks for terminated expressions
+isValue :: Exp -> Bool
+isValue (EInt _) = True
+isValue (EBool _) = True
+isValue (EString _) = True
+isValue _ = False
 
 -- step Defintion
-step :: State -> IO()
+step :: State -> IO State
 
 -- EIf definition
 step (EIf cond stmt1 stmt2, env, kont) = step(cond, env, IfK stmt1 stmt2: kont)
@@ -122,16 +128,12 @@ step (exp1, env, EndK exp2:kont) = step (exp2, env, kont)
 
 -- Print Expression definition
 step (EPrint exp1, env, kont) = step (exp1, env, PrintK exp1:kont)
-step (EBool a, env, PrintK exp1:kont) = (step (EBool a, env, kont))
-step (EString a, env, PrintK exp1:kont) = (step (EString a, env, kont))
-step (EInt a, env, PrintK exp1:kont) = (step (EInt a, env, kont))
+step (exp1, env, PrintK exp2:kont) | isValue exp1 = do putStrLn $ id $ unwrap exp1
+                                                       step (exp1, env, kont)
 
 -- Lowest level of evaluation for primitives
-step state = state
+step state = pure state
 
--- Evaluates the program and returns a final expression
-evalProg :: Exp -> String
-evalProg exp =  unwrap ((\(a,_,_) -> a) (step(exp, [], [Done])))
 
 --Unwraps pure to value
 unwrap (EInt a) = show a
