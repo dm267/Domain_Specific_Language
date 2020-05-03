@@ -156,7 +156,7 @@ step (ERedS exp1, env, kont, streams) = step(exp1, env, RedSK exp1: kont, stream
 step (EInt a, env, RedSK exp1:kont, streams) = step(EInt a, env, kont, reduceStreams(streams))
 
 -- Length Definition
-step (ELen exp1, env, kont, streams) = step(exp1, env, LenK exp1: kont, streams)
+step (ELenS exp1, env, kont, streams) = step(exp1, env, LenK exp1: kont, streams)
 step (EInt a, env, LenK exp1:kont, streams) = step(EInt (getLength a streams), env, kont, streams)
 
 -- End Expression definition MUST BE AT THE BOTTOM OF THE FILE ABOVE step State = pure state
