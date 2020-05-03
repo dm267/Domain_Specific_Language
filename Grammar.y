@@ -93,7 +93,7 @@ Exp :
     | reduceStream Exp                       { ERedS $2}
     | getStream Exp                          { EGetS $2}
     | Length Exp                             { ELen $2}
-    | Exp !!' Exp                            { EIndex $1 $3}
+    | Exp '!!' Exp                            { EIndex $1 $3}
     | Exp ';' Exp                            { End $1 $3}
     | var '=' Exp                            { EAssignment $1 $3}
     | '(' Exp ')'                            { $2 }
