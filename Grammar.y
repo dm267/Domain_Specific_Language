@@ -41,6 +41,7 @@ import Tokens
    '<='               { TokenLesserEqual _ }
    '>='               { TokenGreaterEqual  _ }
    '|'                { TokenOr _ }
+   ','                { TokenComma _ }
    ';'                { TokenEndExp _ }
    '('                { TokenLeftParen _ }
    ')'                { TokenRightParen _ }
@@ -98,9 +99,10 @@ Exp :
     | While '(' Exp ')' Then Exp             { EWhile $3 $6}
     | incrementStream '(' Exp ')'            { EIncS $3}
     | reduceStream '(' Exp ')'               { ERedS $3}
-    | getStream '(' Exp ')'                  { EGetS $3}
+    | getStream '(' Exp ',' Exp ')'          { EGetS $3 $5}
     | Length '(' Exp ')'                     { ELen $3}
     | Exp '!!' Exp                           { EIndex $1 $3}
+    | Exp ',' Exp                            { $1 $3}
     | Exp ';' Exp                            { End $1 $3}
     | var '=' Exp                            { EAssignment $1 $3}
     | '(' Exp ')'                            { $2 }
@@ -136,7 +138,7 @@ data Exp = EInt Int
          | EWhile Exp Exp
          | EIncS Exp
          | ERedS Exp
-         | EGetS Exp
+         | EGetS Exp Exp
          | ELen Exp
          | EIndex Exp Exp
          | End Exp Exp
