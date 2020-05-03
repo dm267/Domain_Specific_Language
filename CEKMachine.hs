@@ -20,12 +20,13 @@ isValue (EBool _) = True
 isValue (EString _) = True
 isValue _ = False
 
--- Removes the first index from each stream
-reduceStreams = map tail
+runNTimes :: Int -> [[Int]] -> ([[Int]] -> [[Int]]) -> [[Int]]
+runNTimes 0 streams f = streams
+runNTimes n streams f = runNTimes (n-1) f(streams) f
 
-updateStreamsN :: Int -> [[Int]] -> [[Int]]
-updateStreamsN 0 streams = streams
-updateStreamsN n streams = updateStreamsN (n-1) (updateStreams(streams))
+-- Removes the first index from each stream
+reduceStreams :: [[Int]] -> [[Int]]
+reduceStreams streams = map tail streams
 
 -- Reads a line from stdin and adds it to existing Streams
 updateStreams :: [[Int]] -> [[Int]]
@@ -153,11 +154,11 @@ step (exp1, env, PrintK exp2:kont, streams) | isValue exp1 = do putStrLn $ id $ 
 
 -- Stream Increment definition
 step (EIncS exp1, env, kont, streams) = step(exp1, env, IncSK exp1: kont, streams)
-step (EInt a, env, IncSK exp1:kont, streams) = step(EInt a, env, kont, updateStreamsN a streams)
+step (EInt a, env, IncSK exp1:kont, streams) = step(EInt a, env, kont, runNTimes a streams updateStreams)
 
 -- Stream Reduce Definition
 step (ERedS exp1, env, kont, streams) = step(exp1, env, RedSK exp1: kont, streams)
-step (EInt a, env, RedSK exp1:kont, streams) = step(EInt a, env, kont, reduceStreams(streams))
+step (EInt a, env, RedSK exp1:kont, streams) = step(EInt a, env, kont, runNTimes a streams reduceStreams)
 
 -- Stream Get Definition
 step (EGetS exp1 exp2, env, kont, streams) = step(exp1, env, GetLK HoleL exp2: kont, streams)
