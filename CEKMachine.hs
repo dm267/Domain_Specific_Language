@@ -11,7 +11,7 @@ type State = (Exp, Env, Kont, Streams)
 type Streams = [[Int]]
 
 data Holes = HoleL | HoleR deriving Show
-data Frames = Done | IfK Exp Exp | WhileK Exp | AssignmentK String | LK Holes Exp | RK Exp Holes | NotK Exp | NegativeK Exp | EndK Exp | PrintK Exp | IncSK Exp | RedSK Exp deriving Show
+data Frames = Done | IfK Exp Exp | WhileK Exp | AssignmentK String | LK Holes Exp | RK Exp Holes | NotK Exp | NegativeK Exp | EndK Exp | PrintK Exp | IncSK Exp | RedSK Exp | LenK Exp deriving Show
 
 -- Checks for terminated expressions
 isValue :: Exp -> Bool
@@ -34,6 +34,10 @@ readStdIn = do x <- getLine
                let newEntriesRaw = words x
                let newEntries = map read newEntriesRaw
                return newEntries
+
+-- Retrieves the length of a stream
+getLength :: Int -> [[Int]] -> Int
+getLength n xss = length (xss !! n)
 
 -- step Defintion
 step :: State -> IO State
@@ -150,6 +154,10 @@ step (EInt a, env, IncSK exp1:kont, streams) = step(EInt a, env, kont, updateStr
 -- Stream Reduce Definition
 step (ERedS exp1, env, kont, streams) = step(exp1, env, RedSK exp1: kont, streams)
 step (EInt a, env, RedSK exp1:kont, streams) = step(EInt a, env, kont, reduceStreams(streams))
+
+-- Length Definition
+step (ELen exp1, env, kont, streams) = step(exp1, env, LenK exp1: kont, streams)
+step (EInt a, env, LenK exp1:kont, streams) = step(EInt (getLength a streams), env, kont, streams)
 
 -- End Expression definition MUST BE AT THE BOTTOM OF THE FILE ABOVE step State = pure state
 step (End exp1 exp2, env, kont, streams) = step (exp1, env, EndK exp2:kont, streams)
