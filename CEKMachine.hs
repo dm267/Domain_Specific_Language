@@ -22,11 +22,10 @@ isValue _ = False
 
 runNTimes :: Int -> [[Int]] -> ([[Int]] -> [[Int]]) -> [[Int]]
 runNTimes 0 streams f = streams
-runNTimes n streams f = runNTimes (n-1) f(streams) f
+runNTimes n streams f = runNTimes (n-1) (f(streams)) f
 
--- Removes the first index from each stream
-reduceStreams :: [[Int]] -> [[Int]]
-reduceStreams streams = map tail streams
+-- Removes the first index from selected stream
+tailIndex ix = map (\(i, x) -> if i == ix then tail x else x) . zip [0..]
 
 -- Reads a line from stdin and adds it to existing Streams
 updateStreams :: [[Int]] -> [[Int]]
@@ -158,7 +157,7 @@ step (EInt a, env, IncSK exp1:kont, streams) = step(EInt a, env, kont, runNTimes
 
 -- Stream Reduce Definition
 step (ERedS exp1, env, kont, streams) = step(exp1, env, RedSK exp1: kont, streams)
-step (EInt a, env, RedSK exp1:kont, streams) = step(EInt a, env, kont, runNTimes a streams reduceStreams)
+step (EInt a, env, RedSK exp1:kont, streams) = step(EInt a, env, kont, tailIndex a streams)
 
 -- Stream Get Definition
 step (EGetS exp1 exp2, env, kont, streams) = step(exp1, env, GetLK HoleL exp2: kont, streams)
