@@ -11,7 +11,7 @@ type State = (Exp, Env, Kont, Streams)
 type Streams = [[Int]]
 
 data Holes = HoleL | HoleR deriving Show
-data Frames = Done | IfK Exp Exp | WhileK Exp | AssignmentK String | LK Holes Exp | RK Exp Holes | NotK Exp | NegativeK Exp | EndK Exp | PrintK Exp | IncSK Exp deriving Show
+data Frames = Done | IfK Exp Exp | WhileK Exp | AssignmentK String | LK Holes Exp | RK Exp Holes | NotK Exp | NegativeK Exp | EndK Exp | PrintK Exp | IncSK Exp | RedSK Exp deriving Show
 
 -- Checks for terminated expressions
 isValue :: Exp -> Bool
@@ -20,6 +20,10 @@ isValue (EBool _) = True
 isValue (EString _) = True
 isValue _ = False
 
+-- Removes the first index from each stream
+reduceStreams = map tail
+
+-- Reads a line from stdin and adds it to existing Streams
 updateStreams :: [[Int]] -> [[Int]]
 updateStreams streams
     | length streams == 0 = map (\x -> [x]) (unsafePerformIO readStdIn)
@@ -142,6 +146,10 @@ step (exp1, env, PrintK exp2:kont, streams) | isValue exp1 = do putStrLn $ id $ 
 -- Stream Increment definition
 step (EIncS exp1, env, kont, streams) = step(exp1, env, IncSK exp1: kont, streams)
 step (EInt a, env, IncSK exp1:kont, streams) = step(EInt a, env, kont, updateStreams(streams))
+
+-- Stream Reduce Definition
+step (ERedS exp1, env, kont, streams) = step(exp1, env, RedSK exp1: kont, streams)
+step (EInt a, env, RedSK exp1:kont, streams) = step(EInt a, env, kont, reduceStreams(streams))
 
 -- End Expression definition MUST BE AT THE BOTTOM OF THE FILE ABOVE step State = pure state
 step (End exp1 exp2, env, kont, streams) = step (exp1, env, EndK exp2:kont, streams)
