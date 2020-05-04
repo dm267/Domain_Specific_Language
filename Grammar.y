@@ -50,11 +50,12 @@ import Tokens
 
 %right '!'
 %right ';'
+%right '='
 
-%nonassoc if
-%nonassoc then
-%nonassoc else
-%nonassoc int true false var '<' '>' '(' ')' '[' ']'
+%nonassoc If
+%nonassoc Then
+%nonassoc Else
+%nonassoc Int True False var '<' '>' '(' ')' '[' ']'
 
 %left '<=' '>='
 %left '&&' '|'
@@ -76,6 +77,7 @@ import Tokens
 
 Exp :
     int                                      { EInt $1 }
+    | var                                    { EVar $1 }
     | True                                   { EBool True }
     | False                                  { EBool False }
     | Exp '==' Exp                           { Equivalent $1 $3 }
@@ -115,7 +117,7 @@ parseError (t:ts) = error ("Parse error at line:column " ++ (tokenPosn t))
 
 data Exp = EInt Int
          | EString String
-         | Var String
+         | EVar String
          | EBool Bool
          | Equivalent Exp Exp
          | Not Exp
