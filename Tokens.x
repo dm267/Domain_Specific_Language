@@ -41,6 +41,7 @@ tokens :-
   \==                           { tok (\p s -> TokenEquivalent p) }
   \!                            { tok (\p s -> TokenNot p) }
   \&&                           { tok (\p s -> TokenAnd p) }
+
   \+                            { tok (\p s -> TokenAdd p) }
   \-                            { tok (\p s -> TokenMinus p) }
   \*                            { tok (\p s -> TokenMultiply p) }
@@ -100,6 +101,7 @@ data Token =
   TokenEquivalent AlexPosn     |
   TokenNot AlexPosn            |
   TokenAnd AlexPosn            |
+
   TokenAdd AlexPosn            |
   TokenMinus AlexPosn          |
   TokenMultiply AlexPosn       |
@@ -148,6 +150,7 @@ tokenPosn (TokenEqual (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenEquivalent (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenNot (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenAnd (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+
 tokenPosn (TokenAdd (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenMinus (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenMultiply (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
