@@ -1,8 +1,12 @@
 incrementStream(3);
-While(streamLength(0) >= 3) Then
+While(streamLength(0) >= 3) Then (
     var1 = getStream(0, 2);
     var2 = 2 * getStream(0, 1);
-    var3 = 3 * getStream(0, 0) - 1;
+    var3 = (3 * getStream(0, 0)) - 1;
     Print(var1);
     Print(var2);
-    Print(var3)
+    Print(var3);
+    reduceStream(0);
+    reduceStream(0);
+    reduceStream(0);
+    incrementStream(3))

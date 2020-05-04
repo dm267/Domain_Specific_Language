@@ -1,5 +1,5 @@
 incrementStream(1);
-While(!(streamLength(0) == 0)) Then
+While(!(streamLength(0) == 0)) Then (
     a = getStream(0, 0);
     b = getStream(1, 0);
     c = getStream(2, 0);
@@ -11,4 +11,4 @@ While(!(streamLength(0) == 0)) Then
     reduceStream(0);
     reduceStream(1);
     reduceStream(2);
-    incrementStream(1)
+    incrementStream(1))
