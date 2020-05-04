@@ -93,7 +93,7 @@ Exp :
     | Exp '>=' Exp                           { GreaterEqual $1 $3 }
     | Exp '|' Exp                            { Or $1 $3 }
     | If '(' Exp ')' Then Exp Else Exp       { EIf $3 $6 $8}
-    | Print Exp                              { EPrint $2}
+    | Print '(' Exp ')'                      { EPrint $3}
     | While '(' Exp ')' Then Exp             { EWhile $3 $6}
     | incrementStream '(' Exp ')'            { EIncS $3}
     | reduceStream '(' Exp ')'               { ERedS $3}
