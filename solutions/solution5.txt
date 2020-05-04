@@ -4,4 +4,4 @@ While (streamLength(0) == 1) Then
     currentSum = currentSum + getStream(0, 0)
     Print(currentSum);
     reduceStream(0);
-    incrementStream(1);
+    incrementStream(1)
