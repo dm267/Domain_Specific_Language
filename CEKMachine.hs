@@ -11,7 +11,12 @@ type State = (Exp, Env, Kont, Streams)
 type Streams = [[Int]]
 
 data Holes = HoleL | HoleR deriving Show
-data Frames = Done | IfK Exp Exp | WhileK Exp | AssignmentK String | LK Holes Exp | RK Exp Holes | NotK Exp | NegativeK Exp | EndK Exp | PrintK Exp | IncSK Exp | RedSK Exp | LenK Exp | GetLK Holes Exp | GetRK Exp Holes deriving Show
+data Frames = Done | IfK Exp Exp | WhileK Exp | AssignmentK String | AddLK Holes Exp | AddRK Exp Holes | NotK Exp
+ | NegativeK Exp | EndK Exp | PrintK Exp | IncSK Exp | RedSK Exp | LenK Exp | GetLK Holes Exp
+ | GetRK Exp Holes | MinLK Holes Exp | MinRK Exp Holes | MulLK Holes Exp | MulRK Exp Holes | DivLK Holes Exp | DivRK Exp Holes
+ | ExponentialLK Holes Exp | ExponentialRK Exp Holes | EquivLK Holes Exp | EquivRK Exp Holes | AndLK Holes Exp | AndRK Exp Holes
+ | LessLK Holes Exp | LessRK Exp Holes | GreatLK Holes Exp | GreatRK Exp Holes | LeqLK Holes Exp | LeqRK Exp Holes
+ | GeqLK Holes Exp | GeqRK Exp Holes | OrLK Holes Exp | OrRK Exp Holes deriving Show
 
 -- Checks for terminated expressions
 isValue :: Exp -> Bool
@@ -70,44 +75,44 @@ step (Var exp, env, kont, streams) = case lookup exp env of
                             Nothing -> error "Variable not found"
 
 -- Add definition
-step (Add exp1 exp2, env, kont, streams) = step (exp1, env, LK HoleL exp2:kont, streams)
-step (EInt a, env, LK HoleL exp2:kont, streams) = step (exp2, env, RK (EInt a) HoleR:kont, streams)
-step (EInt b, env, RK (EInt a) HoleR:kont, streams) = step (EInt (a + b), env, kont, streams)
+step (Add exp1 exp2, env, kont, streams) = step (exp1, env, AddLK HoleL exp2:kont, streams)
+step (EInt a, env, AddLK HoleL exp2:kont, streams) = step (exp2, env, AddRK (EInt a) HoleR:kont, streams)
+step (EInt b, env, AddRK (EInt a) HoleR:kont, streams) = step (EInt (a + b), env, kont, streams)
 
 
 -- Minus definition
-step (Minus exp1 exp2, env, kont, streams) = step (exp1, env, LK HoleL exp2:kont, streams)
-step (EInt a, env, LK HoleL exp2:kont, streams) = step (exp2, env, RK (EInt a) HoleR:kont, streams)
-step (EInt b, env, RK (EInt a) HoleR:kont, streams) = step (EInt (a - b), env, kont, streams)
+step (Minus exp1 exp2, env, kont, streams) = step (exp1, env, MinLK HoleL exp2:kont, streams)
+step (EInt a, env, MinLK HoleL exp2:kont, streams) = step (exp2, env, MinRK (EInt a) HoleR:kont, streams)
+step (EInt b, env, MinRK (EInt a) HoleR:kont, streams) = step (EInt (a - b), env, kont, streams)
 
 
 -- Multiply definition
-step (Multiply exp1 exp2, env, kont, streams) = step (exp1, env, LK HoleL exp2:kont, streams)
-step (EInt a, env, LK HoleL exp2:kont, streams) = step (exp2, env, RK (EInt a) HoleR:kont, streams)
-step (EInt b, env, RK (EInt a) HoleR:kont, streams) = step (EInt (a * b), env, kont, streams)
+step (Multiply exp1 exp2, env, kont, streams) = step (exp1, env, MulLK HoleL exp2:kont, streams)
+step (EInt a, env, MulLK HoleL exp2:kont, streams) = step (exp2, env, MulRK (EInt a) HoleR:kont, streams)
+step (EInt b, env, MulRK (EInt a) HoleR:kont, streams) = step (EInt (a * b), env, kont, streams)
 
 
 -- Divide definition
-step (Divide exp1 exp2, env, kont, streams) = step (exp1, env, LK HoleL exp2:kont, streams)
-step (EInt a, env, LK HoleL exp2:kont, streams) = step (exp2, env, RK (EInt a) HoleR:kont, streams)
-step (EInt b, env, RK (EInt a) HoleR:kont, streams) = step (EInt (a `div` b), env, kont, streams)
+step (Divide exp1 exp2, env, kont, streams) = step (exp1, env, DivLK HoleL exp2:kont, streams)
+step (EInt a, env, DivLK HoleL exp2:kont, streams) = step (exp2, env, DivRK (EInt a) HoleR:kont, streams)
+step (EInt b, env, DivRK (EInt a) HoleR:kont, streams) = step (EInt (a `div` b), env, kont, streams)
 
 
 -- Exponential definition
-step (Exponential exp1 exp2, env, kont, streams) = step (exp1, env, LK HoleL exp2:kont, streams)
-step (EInt a, env, LK HoleL exp2:kont, streams) = step (exp2, env, RK (EInt a) HoleR:kont, streams)
-step (EInt b, env, RK (EInt a) HoleR:kont, streams) = step (EInt (a ^ b), env, kont, streams)
+step (Exponential exp1 exp2, env, kont, streams) = step (exp1, env, ExponentialLK HoleL exp2:kont, streams)
+step (EInt a, env, ExponentialLK HoleL exp2:kont, streams) = step (exp2, env, ExponentialRK (EInt a) HoleR:kont, streams)
+step (EInt b, env, ExponentialRK (EInt a) HoleR:kont, streams) = step (EInt (a ^ b), env, kont, streams)
 
 -- Negative definition
 step (Negative exp1, env, kont, streams) = step (exp1, env, NegativeK exp1:kont, streams)
 step (EInt a, env, NegativeK exp1:kont, streams) = step (EInt (-a), env, kont, streams)
 
 -- Equivalent definition
-step (Equivalent exp1 exp2, env, kont, streams) = step (exp1, env, LK HoleL exp2:kont, streams)
-step (EInt a, env, LK HoleL exp2:kont, streams) = step (exp2, env, RK (EInt a) HoleR:kont, streams)
-step (EInt b, env, RK (EInt a) HoleR:kont, streams) = step (EBool (a == b), env, kont, streams)
-step (EBool a, env, LK HoleL exp2:kont, streams) = step (exp2, env, RK (EBool a) HoleR:kont, streams)
-step (EBool b, env, RK (EBool a) HoleR:kont, streams) = step (EBool (a == b), env, kont, streams)
+step (Equivalent exp1 exp2, env, kont, streams) = step (exp1, env, EquivLK HoleL exp2:kont, streams)
+step (EInt a, env, EquivLK HoleL exp2:kont, streams) = step (exp2, env, EquivRK (EInt a) HoleR:kont, streams)
+step (EInt b, env, EquivRK (EInt a) HoleR:kont, streams) = step (EBool (a == b), env, kont, streams)
+step (EBool a, env, EquivLK HoleL exp2:kont, streams) = step (exp2, env, EquivRK (EBool a) HoleR:kont, streams)
+step (EBool b, env, EquivRK (EBool a) HoleR:kont, streams) = step (EBool (a == b), env, kont, streams)
 
 
 -- Not definition
@@ -116,37 +121,38 @@ step (EBool a, env, NotK exp1:kont, streams) = step (EBool (not a), env, kont, s
 
 
 -- And definition
-step (And exp1 exp2, env, kont, streams) = step (exp1, env, LK HoleL exp2:kont, streams)
-step (EBool a, env, LK HoleL exp2:kont, streams) = step (exp2, env, RK (EBool a) HoleR:kont, streams)
-step (EBool b, env, RK (EBool a) HoleR:kont, streams) = step (EBool (a && b), env, kont, streams)
+step (And exp1 exp2, env, kont, streams) = step (exp1, env, AndLK HoleL exp2:kont, streams)
+step (EBool a, env, AndLK HoleL exp2:kont, streams) = step (exp2, env, AndRK (EBool a) HoleR:kont, streams)
+step (EBool b, env, AndRK (EBool a) HoleR:kont, streams) = step (EBool (a && b), env, kont, streams)
 
 
 -- Lesser definition
-step (Lesser exp1 exp2, env, kont, streams) = step (exp1, env, LK HoleL exp2:kont, streams)
-step (EInt a, env, LK HoleL exp2:kont, streams) = step (exp2, env, RK (EInt a) HoleR:kont, streams)
-step (EInt b, env, RK (EInt a) HoleR:kont, streams) = step (EBool (a < b), env, kont, streams)
+step (Lesser exp1 exp2, env, kont, streams) = step (exp1, env, LessLK HoleL exp2:kont, streams)
+step (EInt a, env, LessLK HoleL exp2:kont, streams) = step (exp2, env, LessRK (EInt a) HoleR:kont, streams)
+step (EInt b, env, LessRK (EInt a) HoleR:kont, streams) = step (EBool (a < b), env, kont, streams)
 
 
 -- Greater definition
-step (Greater exp1 exp2, env, kont, streams) = step (exp1, env, LK HoleL exp2:kont, streams)
-step (EInt a, env, LK HoleL exp2:kont, streams) = step (exp2, env, RK (EInt a) HoleR:kont, streams)
-step (EInt b, env, RK (EInt a) HoleR:kont, streams) = step (EBool (a > b), env, kont, streams)
+step (Greater exp1 exp2, env, kont, streams) = step (exp1, env, GreatLK HoleL exp2:kont, streams)
+step (EInt a, env, GreatLK HoleL exp2:kont, streams) = step (exp2, env, GreatRK (EInt a) HoleR:kont, streams)
+step (EInt b, env, GreatRK (EInt a) HoleR:kont, streams) = step (EBool (a > b), env, kont, streams)
 
 
 -- LesserEqual definition
-step (LesserEqual exp1 exp2, env, kont, streams) = step (exp1, env, LK HoleL exp2:kont, streams)
-step (EInt a, env, LK HoleL exp2:kont, streams) = step (exp2, env, RK (EInt a) HoleR:kont, streams)
-step (EInt b, env, RK (EInt a) HoleR:kont, streams) = step (EBool (a <= b), env, kont, streams)
+step (LesserEqual exp1 exp2, env, kont, streams) = step (exp1, env, LeqLK HoleL exp2:kont, streams)
+step (EInt a, env, LeqLK HoleL exp2:kont, streams) = step (exp2, env, LeqRK (EInt a) HoleR:kont, streams)
+step (EInt b, env, LeqRK (EInt a) HoleR:kont, streams) = step (EBool (a <= b), env, kont, streams)
 
 
 -- GreaterEqual definition
-step (GreaterEqual exp1 exp2, env, kont, streams) = step (exp1, env, LK HoleL exp2:kont, streams)
-step (EInt a, env, LK HoleL exp2:kont, streams) = step (exp2, env, RK (EInt a) HoleR:kont, streams)
+step (GreaterEqual exp1 exp2, env, kont, streams) = step (exp1, env, GeqLK HoleL exp2:kont, streams)
+step (EInt a, env, GeqLK HoleL exp2:kont, streams) = step (exp2, env, GeqRK (EInt a) HoleR:kont, streams)
+step (EInt b, env, GeqRK (EInt a) HoleR:kont, streams) = step (EBool (a >= b), env, kont, streams)
 
 -- Or definition
-step (Or exp1 exp2, env, kont, streams) = step (exp1, env, LK HoleL exp2:kont, streams)
-step (EBool a, env, LK HoleL exp2:kont, streams) = step (exp2, env, RK (EBool a) HoleR:kont, streams)
-step (EBool b, env, RK (EBool a) HoleR:kont, streams) = step (EBool (a || b), env, kont, streams)
+step (Or exp1 exp2, env, kont, streams) = step (exp1, env, OrLK HoleL exp2:kont, streams)
+step (EBool a, env, OrLK HoleL exp2:kont, streams) = step (exp2, env, OrRK (EBool a) HoleR:kont, streams)
+step (EBool b, env, OrRK (EBool a) HoleR:kont, streams) = step (EBool (a || b), env, kont, streams)
 
 -- Print Expression definition
 step (EPrint exp1, env, kont, streams) = step (exp1, env, PrintK exp1:kont, streams)
