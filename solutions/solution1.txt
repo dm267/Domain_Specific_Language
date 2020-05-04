@@ -1,0 +1,9 @@
+incrementStream(2);
+While (streamLength(0) >= 2) Then
+    Print(getStream(0, 0));
+    Print(getStream(0, 1));
+    Print(getStream(1, 0));
+    reduceStream(0);
+    reduceStream(0);
+    reduceStream(1);
+    incrementStream(2)
