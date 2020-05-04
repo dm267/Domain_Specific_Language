@@ -73,7 +73,7 @@ step (EInt a, env, AssignmentK var:kont, streams) = step((EInt a), (var, EInt a)
 step (EBool b, env, AssignmentK var:kont, streams) = step((EBool b), (var, EBool b):env, kont, streams)
 
 -- Var lookup definition
-step (Var exp, env, kont, streams) = case lookup exp env of
+step (EVar exp, env, kont, streams) = case lookup exp env of
                             Just (EInt a) -> step(EInt a, env, kont, streams)
                             Just (EBool b) -> step(EBool b, env, kont, streams)
                             Nothing -> error "Variable not found"
