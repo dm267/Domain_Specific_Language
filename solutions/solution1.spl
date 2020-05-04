@@ -6,4 +6,6 @@ While (streamLength(0) >= 2) Then (
     reduceStream(0);
     reduceStream(0);
     reduceStream(1);
-    incrementStream(2))
+    incrementStream(2));
+
+If (streamLength(0) == 1) Then Print(getStream(0,0)) Else False
