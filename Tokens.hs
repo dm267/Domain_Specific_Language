@@ -2668,7 +2668,7 @@ data Token =
   TokenVar AlexPosn String     |
   TokenIncrementS AlexPosn     |
   TokenReduceS AlexPosn        |
-  TokenGetS AlexPosn           |
+  TokenGetS AlexPosn Int       |
   TokenLengthS AlexPosn        |
   TokenTrue AlexPosn           |
   TokenFalse AlexPosn          |
@@ -2709,7 +2709,7 @@ tokenPosn (TokenInt (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenVar (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenIncrementS (AlexPn a l c) ) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenReduceS (AlexPn a l c) ) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenGetS (AlexPn a l c) ) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenGetS (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLengthS (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenTrue (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenFalse (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
@@ -2750,7 +2750,7 @@ alex_action_3 =  tok (\p s -> TokenInt p (read s))
 alex_action_4 =  tok (\p s -> TokenVar p s) 
 alex_action_5 =  tok (\p s -> TokenIncrementS p) 
 alex_action_6 =  tok (\p s -> TokenReduceS p) 
-alex_action_7 =  tok (\p s -> TokenGetS p) 
+alex_action_7 =  tok (\p s -> TokenGetS p (read s)) 
 alex_action_8 =  tok (\p s -> TokenLengthS p) 
 alex_action_9 =  tok (\p s -> TokenTrue p) 
 alex_action_10 =  tok (\p s -> TokenFalse p) 

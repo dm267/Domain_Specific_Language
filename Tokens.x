@@ -30,7 +30,7 @@ tokens :-
   $alpha [$alpha $digit]*       { tok (\p s -> TokenVar p s) }
   incrementStream               { tok (\p s -> TokenIncrementS p) }   --get the next n instances
   reduceStream                  { tok (\p s -> TokenReduceS p) }      --remove the oldest n instances
-  getStream                     { tok (\p s -> TokenGetS p) }         --return an array corresposing with a kont stream
+  getStream                     { tok (\p s -> TokenGetS p (read s)) }         --return an array corresposing with a kont stream
   streamLength                  { tok (\p s -> TokenLengthS p) }       --returns length
   True                          { tok (\p s -> TokenTrue p) }
   False                         { tok (\p s -> TokenFalse p) } 
@@ -76,7 +76,7 @@ data Token =
   TokenVar AlexPosn String     |
   TokenIncrementS AlexPosn     |
   TokenReduceS AlexPosn        |
-  TokenGetS AlexPosn           |
+  TokenGetS AlexPosn Int       |
   TokenLengthS AlexPosn        |
   TokenTrue AlexPosn           |
   TokenFalse AlexPosn          |
@@ -117,7 +117,7 @@ tokenPosn (TokenInt (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenVar (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenIncrementS (AlexPn a l c) ) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenReduceS (AlexPn a l c) ) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenGetS (AlexPn a l c) ) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenGetS (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLengthS (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenTrue (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenFalse (AlexPn a l c)) = show(l) ++ ":" ++ show(c)

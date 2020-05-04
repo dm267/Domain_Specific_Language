@@ -21,7 +21,7 @@ import Tokens
    Print              { TokenPrint _ }
    incrementStream    { TokenIncrementS _ }
    reduceStream       { TokenReduceS _ }
-   getStream          { TokenGetS _ }
+   getStream          { TokenGetS _ $$ }
    streamLength       { TokenLengthS _ }
    '!!'               { TokenIndex _ }
    '='                { TokenEqual _ }

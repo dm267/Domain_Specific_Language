@@ -1315,7 +1315,7 @@ happyNewToken action sts stk (tk:tks) =
 	TokenPrint _ -> cont 13;
 	TokenIncrementS _ -> cont 14;
 	TokenReduceS _ -> cont 15;
-	TokenGetS _ -> cont 16;
+	TokenGetS _ happy_dollar_dollar -> cont 16;
 	TokenLengthS _ -> cont 17;
 	TokenIndex _ -> cont 18;
 	TokenEqual _ -> cont 19;
