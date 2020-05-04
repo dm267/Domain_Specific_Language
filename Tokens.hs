@@ -527,7 +527,7 @@ alex_base = listArray (0 :: Int, 38)
   , 6
   , 734
   , 697
-  , 707
+  , 716
   , 0
   , -54
   , 0
@@ -1311,6 +1311,15 @@ alex_table = listArray (0 :: Int, 989)
   , 14
   , 14
   , 15
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 15
   , 15
   , 15
   , 15
@@ -1357,43 +1366,34 @@ alex_table = listArray (0 :: Int, 989)
   , 0
   , 0
   , 0
-  , 0
-  , 0
-  , 15
-  , 15
-  , 15
-  , 15
-  , 15
-  , 15
-  , 15
-  , 15
-  , 15
-  , 15
-  , 15
-  , 15
-  , 15
-  , 15
-  , 15
-  , 15
-  , 15
-  , 15
-  , 15
-  , 15
-  , 15
-  , 15
-  , 15
-  , 15
-  , 15
   , 15
   , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
+  , 15
+  , 15
+  , 15
+  , 15
+  , 15
+  , 15
+  , 15
+  , 15
+  , 15
+  , 15
+  , 15
+  , 15
+  , 15
+  , 15
+  , 15
+  , 15
+  , 15
+  , 15
+  , 15
+  , 15
+  , 15
+  , 15
+  , 15
+  , 15
+  , 15
+  , 15
   , 0
   , 0
   , 0
@@ -2304,6 +2304,15 @@ alex_check = listArray (0 :: Int, 989)
   , 55
   , 56
   , 57
+  , 39
+  , -1
+  , -1
+  , -1
+  , -1
+  , -1
+  , -1
+  , -1
+  , -1
   , 48
   , 49
   , 50
@@ -2351,7 +2360,7 @@ alex_check = listArray (0 :: Int, 989)
   , -1
   , -1
   , -1
-  , -1
+  , 95
   , -1
   , 97
   , 98
@@ -2379,15 +2388,6 @@ alex_check = listArray (0 :: Int, 989)
   , 120
   , 121
   , 122
-  , -1
-  , -1
-  , -1
-  , -1
-  , -1
-  , -1
-  , -1
-  , -1
-  , -1
   , -1
   , -1
   , -1
@@ -2654,7 +2654,7 @@ alex_actions = array (0 :: Int, 25)
   , (0,alex_action_38)
   ]
 
-{-# LINE 66 "Tokens.x" #-}
+{-# LINE 72 "Tokens.x" #-}
  
 -- Each action has type :: AlexPosn -> String -> Token 
 -- Helper Function
@@ -2666,10 +2666,12 @@ tok f p s = f p s
 data Token = 
   TokenInt AlexPosn Int        |
   TokenVar AlexPosn String     |
+
   TokenIncrementS AlexPosn     |
   TokenReduceS AlexPosn        |
   TokenGetS AlexPosn Int       |
   TokenLengthS AlexPosn        |
+
   TokenTrue AlexPosn           |
   TokenFalse AlexPosn          |
   TokenIf AlexPosn             |
@@ -2678,6 +2680,7 @@ data Token =
   TokenWhile AlexPosn          |
   TokenPrint AlexPosn          |
   TokenIndex AlexPosn          |
+
   TokenEqual AlexPosn          |
   TokenEquivalent AlexPosn     |
   TokenNot AlexPosn            |
@@ -2687,13 +2690,16 @@ data Token =
   TokenMultiply AlexPosn       |
   TokenDivide AlexPosn         |
   TokenExponential AlexPosn    |
+
   TokenLesser AlexPosn         |
   TokenGreater AlexPosn        |
   TokenLesserEqual AlexPosn    |
   TokenGreaterEqual AlexPosn   |
   TokenOr AlexPosn             |
+
   TokenComma AlexPosn          |
   TokenEndExp AlexPosn         |
+
   TokenLeftParen AlexPosn      |
   TokenRightParen AlexPosn     |
   TokenLeftBrace AlexPosn      |
@@ -2707,10 +2713,12 @@ data Token =
 tokenPosn :: Token -> String
 tokenPosn (TokenInt (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenVar (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenIncrementS (AlexPn a l c) ) = show(l) ++ ":" ++ show(c)
+
+tokenPosn (TokenIncrementS (AlexPn a l c)  ) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenReduceS (AlexPn a l c) ) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenGetS (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLengthS (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+
 tokenPosn (TokenTrue (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenFalse (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenIf (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
@@ -2718,7 +2726,9 @@ tokenPosn (TokenThen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenElse (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenWhile (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenPrint (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+
 tokenPosn (TokenIndex (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+
 tokenPosn (TokenEqual (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenEquivalent (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenNot (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
@@ -2728,13 +2738,16 @@ tokenPosn (TokenMinus (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenMultiply (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenDivide (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenExponential (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+
 tokenPosn (TokenLesser (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenGreater (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLesserEqual (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenGreaterEqual (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenOr (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+
 tokenPosn (TokenComma (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenEndExp (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+
 tokenPosn (TokenLeftParen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenRightParen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLeftBrace (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
@@ -2749,7 +2762,7 @@ tokenPosn (TokenRightBracket (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 alex_action_3 =  tok (\p s -> TokenInt p (read s)) 
 alex_action_4 =  tok (\p s -> TokenVar p s) 
 alex_action_5 =  tok (\p s -> TokenIncrementS p) 
-alex_action_6 =  tok (\p s -> TokenReduceS p) 
+alex_action_6 =  tok (\p s -> TokenReduceS p ) 
 alex_action_7 =  tok (\p s -> TokenGetS p (read s)) 
 alex_action_8 =  tok (\p s -> TokenLengthS p) 
 alex_action_9 =  tok (\p s -> TokenTrue p) 

@@ -20,7 +20,7 @@ import Tokens
    While              { TokenWhile _ }
    Print              { TokenPrint _ }
    incrementStream    { TokenIncrementS _ }
-   reduceStream       { TokenReduceS _ }
+   reduceStream       { TokenReduceS _  }
    getStream          { TokenGetS _ $$ }
    streamLength       { TokenLengthS _ }
    '!!'               { TokenIndex _ }
@@ -54,7 +54,7 @@ import Tokens
 %nonassoc if
 %nonassoc then
 %nonassoc else
-%nonassoc int true false var '<' '>' '(' ')'
+%nonassoc int true false var '<' '>' '(' ')' '[' ']'
 
 %left '<=' '>='
 %left '&&' '|'
