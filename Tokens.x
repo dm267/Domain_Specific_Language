@@ -28,11 +28,6 @@ tokens :-
   "--".*                        ; 
   $digit+                       { tok (\p s -> TokenInt p (read s)) } --one or more including 0
 
-  incrementStream               { tok (\p s -> TokenIncrementS p) }   --get the next n instances
-  reduceStream                  { tok (\p s -> TokenReduceS p ) }      --remove the oldest n instances
-  getStream                     { tok (\p s -> TokenGetS p (read s)) }         --return an array corresposing with a kont stream
-  streamLength                  { tok (\p s -> TokenLengthS p) }       --returns length
-
   True                          { tok (\p s -> TokenTrue p) }
   False                         { tok (\p s -> TokenFalse p) } 
   If                            { tok (\p s -> TokenIf p) }
@@ -67,6 +62,12 @@ tokens :-
   \}                            { tok (\p s -> TokenRightBrace p) }
   \[                            { tok (\p s -> TokenLeftBracket p) }
   \]                            { tok (\p s -> TokenRightBracket p) }
+
+  incrementStream               { tok (\p s -> TokenIncrementS p) }   --get the next n instances
+  reduceStream                  { tok (\p s -> TokenReduceS p ) }      --remove the oldest n instances
+  getStream                     { tok (\p s -> TokenGetS p (read s)) }         --return an array corresposing with a kont stream
+  streamLength                  { tok (\p s -> TokenLengthS p) }       --returns length
+
   $alpha [$alpha $digit \_ \']* { tok (\p s -> TokenVar p s) }
 
 { 

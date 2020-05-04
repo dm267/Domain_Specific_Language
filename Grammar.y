@@ -92,13 +92,13 @@ Exp :
     | Exp '<=' Exp                           { LesserEqual $1 $3 }
     | Exp '>=' Exp                           { GreaterEqual $1 $3 }
     | Exp '|' Exp                            { Or $1 $3 }
-    | If '[' Exp ']' Then Exp Else Exp       { EIf $3 $6 $8}
+    | If '(' Exp ')' Then Exp Else Exp       { EIf $3 $6 $8}
     | Print Exp                              { EPrint $2}
-    | While '[' Exp ']' Then Exp             { EWhile $3 $6}
-    | incrementStream '[' Exp ']'            { EIncS $3}
-    | reduceStream '[' Exp ']'               { ERedS $3}
-    | getStream '[' Exp ',' Exp ']'          { EGetS $3 $5}
-    | streamLength '[' Exp ']'               { ELenS $3}
+    | While '(' Exp ')' Then Exp             { EWhile $3 $6}
+    | incrementStream '(' Exp ')'            { EIncS $3}
+    | reduceStream '(' Exp ')'               { ERedS $3}
+    | getStream '(' Exp ',' Exp ')'          { EGetS $3 $5}
+    | streamLength '(' Exp ')'               { ELenS $3}
     | Exp '!!' Exp                           { EIndex $1 $3}
     | Exp ',' Exp                            { Comma $1 $3}
     | Exp ';' Exp                            { End $1 $3}
