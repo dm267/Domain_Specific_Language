@@ -48,12 +48,13 @@ import Tokens
 
 --Associatives, when on same level it means they have same power
 
-%right Then
-%right Else 
 %right '!'
 %right ';'
 
-%nonassoc '<' '>' '(' ')'
+%nonassoc if
+%nonassoc then
+%nonassoc else
+%nonassoc int true false var '<' '>' '(' ')'
 
 %left '<=' '>='
 %left '&&' '|'
@@ -102,7 +103,7 @@ Exp :
     | Exp ',' Exp                            { Comma $1 $3}
     | Exp ';' Exp                            { End $1 $3}
     | var '=' Exp                            { EAssignment $1 $3}
-    | '[' Exp ']'                            { $2 }
+    | '(' Exp ')'                            { $2 }
 
 
 { 
