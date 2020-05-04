@@ -27,7 +27,6 @@ tokens :-
   $white+                       ; 
   "--".*                        ; 
   $digit+                       { tok (\p s -> TokenInt p (read s)) } --one or more including 0
-  $alpha [$alpha $digit \_ \']* { tok (\p s -> TokenVar p s) }
 
   incrementStream               { tok (\p s -> TokenIncrementS p) }   --get the next n instances
   reduceStream                  { tok (\p s -> TokenReduceS p ) }      --remove the oldest n instances
@@ -68,6 +67,7 @@ tokens :-
   \}                            { tok (\p s -> TokenRightBrace p) }
   \[                            { tok (\p s -> TokenLeftBracket p) }
   \]                            { tok (\p s -> TokenRightBracket p) }
+  $alpha [$alpha $digit \_ \']* { tok (\p s -> TokenVar p s) }
 
 { 
 -- Each action has type :: AlexPosn -> String -> Token 
