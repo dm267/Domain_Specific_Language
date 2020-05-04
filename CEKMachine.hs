@@ -49,6 +49,7 @@ readStdIn = do x <- getLine
 
 -- Retrieves the length of a stream
 getLength :: Int -> [[Int]] -> Int
+getLength n [] = 0
 getLength n xss = length (xss !! n)
 
 
