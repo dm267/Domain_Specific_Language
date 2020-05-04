@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -fno-warn-unused-binds -fno-warn-missing-signatures #-}
 {-# LANGUAGE CPP #-}
-{-# LINE 3 "Tokens.x" #-}
- 
+{-# LINE 1 "Tokens.x" #-}
+
 module Tokens where 
 
 #if __GLASGOW_HASKELL__ >= 603
@@ -2654,7 +2654,7 @@ alex_actions = array (0 :: Int, 25)
   , (0,alex_action_38)
   ]
 
-{-# LINE 70 "Tokens.x" #-}
+{-# LINE 66 "Tokens.x" #-}
  
 -- Each action has type :: AlexPosn -> String -> Token 
 -- Helper Function
