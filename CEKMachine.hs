@@ -11,7 +11,7 @@ type State = (Exp, Env, Kont, Streams)
 type Streams = [[Int]]
 
 data Holes = HoleL | HoleR deriving Show
-data Frames = Done | IfK Exp Exp | WhileK Exp | AssignmentK String | AddLK Holes Exp | AddRK Exp Holes | NotK Exp
+data Frames = Done | IfK Exp Exp | WhileLK Exp Exp | WhileRK Exp Exp | AssignmentK String | AddLK Holes Exp | AddRK Exp Holes | NotK Exp
  | NegativeK Exp | EndK Exp | PrintK Exp | IncSK Exp | RedSK Exp | LenK Exp | GetLK Holes Exp
  | GetRK Exp Holes | MinLK Holes Exp | MinRK Exp Holes | MulLK Holes Exp | MulRK Exp Holes | DivLK Holes Exp | DivRK Exp Holes
  | ExponentialLK Holes Exp | ExponentialRK Exp Holes | EquivLK Holes Exp | EquivRK Exp Holes | AndLK Holes Exp | AndRK Exp Holes
@@ -59,9 +59,10 @@ step (EBool True, env, IfK stmt1 stmt2: kont, streams) = step(stmt1, env, kont, 
 step (EBool False, env, IfK stmt1 stmt2: kont, streams) = step(stmt2, env, kont, streams)
 
 -- EWhile definition
-step (EWhile cond exp, env, kont, streams) = step(cond, env, WhileK exp: kont, streams)
-step (EBool True, env, WhileK exp: kont, streams) = step(exp, env, kont, streams)
-step (EBool False, env, WhileK exp: kont, streams) = step(EBool False, env, kont, streams)
+step (EWhile cond exp1, env, kont, streams) = step(cond, env, WhileLK cond exp1: kont, streams)
+step (EBool True, env, WhileLK cond exp1:kont, streams) = step(exp1, env, WhileRK cond exp1: kont, streams)
+step (e, env, WhileRK cond exp1:kont, streams) | isValue e = step ((EWhile cond exp1), env, kont, streams)
+step (EBool False, env, WhileLK cond exp1:kont, streams) = step(EBool False, env, kont, streams)
 
 -- EAssignment definition
 step (EAssignment var exp, env, kont, streams) = step(exp, env, AssignmentK var: kont, streams)
