@@ -1,7 +1,4 @@
--- happy <inputfile> -o <outputfile>
---implement unused terminals
-
-{ 
+{
 module Grammar where 
 import Tokens 
 }

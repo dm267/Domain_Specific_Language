@@ -1,10 +1,6 @@
---alex <inputfile> -o <outputfile>
-
-{ 
+{
 module Tokens where 
 }
-
---Add stream tokens
 
 %wrapper "posn" 
 
