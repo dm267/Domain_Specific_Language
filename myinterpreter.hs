@@ -11,5 +11,5 @@ main = main'
 main' = do (fileName : _ ) <- getArgs
            sourceText <- readFile fileName
            let parsedProg = parseCalc (alexScanTokens sourceText)
-           let result = evalProg (parsedProg)
-           putStrLn ( (unwrap result) ++ "\n")
+           result <- evalProg parsedProg
+           return()

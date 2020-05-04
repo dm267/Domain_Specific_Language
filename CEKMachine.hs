@@ -189,7 +189,7 @@ step (exp1, env, EndK exp2:kont, streams) = step (exp2, env, kont, streams)
 step state = return state
 
 -- Function to iterate the small step reduction to termination
-evalProg exp = (\(a,_,_,_) -> a) (unsafePerformIO (step(exp, [], [Done], [])))
+evalProg exp = step(exp, [], [Done], [])
 
 --Unwraps pure to value
 unwrap (EInt a) = show a
