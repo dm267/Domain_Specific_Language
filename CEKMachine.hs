@@ -35,8 +35,11 @@ tailIndex ix = map (\(i, x) -> if i == ix then tail x else x) . zip [0..]
 -- Reads a line from stdin and adds it to existing Streams
 updateStreams :: [[Int]] -> [[Int]]
 updateStreams streams
-    | length streams == 0 = map (\x -> [x]) (unsafePerformIO readStdIn)
-    | otherwise = zipWith (\x y -> x ++ [y]) streams (unsafePerformIO readStdIn)
+    | length streams == 0 = map (\x -> [x]) streamLine
+    | length streams /= 0 && streamLine == [] = streams
+    | otherwise = zipWith (\x y -> x ++ [y]) streams streamLine
+    where
+         streamLine = unsafePerformIO readStdIn
 
 readStdIn :: IO [Int]
 readStdIn = do x <- getLine
