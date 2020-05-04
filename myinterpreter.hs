@@ -6,26 +6,11 @@ import Control.Exception
 import System.IO
 
 main :: IO ()
-main = do (fileName : _ ) <- getArgs
+main = main'
+
+main' = do (fileName : _ ) <- getArgs
            sourceText <- readFile fileName
            let parsedProg = parseCalc (alexScanTokens sourceText)
-           runInput [] parsedProg []
-
-
-runInput env parsedProg stream =
-    do
-        done <- isEOF
-        if done
-            then
-                putStr ""
-            else
-                do s <- getLine
-                   let (out, newEnv, newStreams) = evalLoop s env stream parsedProg
-                   putStrLn out
-                   runInput newEnv parsedProg newStreams
-
-
-readLines :: Handle -> IO [String]
-readLines h = do
-  s <- hGetContents h
-  return $ lines s
+		   putStrLn ("Parsed as " ++ (show parsedProg) ++ "\n")
+           let result = evalLoop (parsedProg)
+           putStrLn ("Evaluates to " ++ (result) ++ "\n")

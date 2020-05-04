@@ -176,6 +176,11 @@ step (exp1, env, EndK exp2:kont, streams) = step (exp2, env, kont, streams)
 -- Lowest level of evaluation for primitives
 step state = return state
 
+-- Function to iterate the small step reduction to termination
+evalLoop :: Exp -> Exp
+evalLoop e = evalLoop' (e,[],[], [])
+  where evalLoop' (e,env,k,streams) = step (e,env,k,streams)
+
 
 --Unwraps pure to value
 unwrap (EInt a) = show a
