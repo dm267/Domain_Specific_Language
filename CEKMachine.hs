@@ -20,7 +20,9 @@ isValue (EBool _) = True
 isValue (EString _) = True
 isValue _ = False
 
-runNTimes n streams f = iterate f streams !! n
+runNTimes :: Int -> [[Int]] -> ([[Int]] -> [[Int]]) -> [[Int]]
+runNTimes 0 streams f = streams
+runNTimes n streams f = runNTimes (n-1) (f(streams)) f
 
 -- Removes the first index from selected stream
 tailIndex ix = map (\(i, x) -> if i == ix then tail x else x) . zip [0..]
@@ -28,11 +30,8 @@ tailIndex ix = map (\(i, x) -> if i == ix then tail x else x) . zip [0..]
 -- Reads a line from stdin and adds it to existing Streams
 updateStreams :: [[Int]] -> [[Int]]
 updateStreams streams
-    | length streams == 0 = map (\x -> [x]) streamLine
-    | length streams /= 0 && streamLine == [] = streams
-    | otherwise = zipWith (\x y -> x ++ [y]) streams streamLine
-    where
-         streamLine = unsafePerformIO readStdIn
+    | length streams == 0 = map (\x -> [x]) (unsafePerformIO readStdIn)
+    | otherwise = zipWith (\x y -> x ++ [y]) streams (unsafePerformIO readStdIn)
 
 readStdIn :: IO [Int]
 readStdIn = do x <- getLine
@@ -43,6 +42,8 @@ readStdIn = do x <- getLine
 -- Retrieves the length of a stream
 getLength :: Int -> [[Int]] -> Int
 getLength n xss = length (xss !! n)
+
+
 
 -- step Defintion
 step :: State -> IO State

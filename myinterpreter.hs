@@ -1,5 +1,5 @@
-import Grammar
 import Tokens
+import Grammar
 import CEKMachine
 import System.Environment
 import Control.Exception
