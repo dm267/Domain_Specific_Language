@@ -1,13 +1,14 @@
 incrementStream(3);
-While (streamLength(0) >= 0) Then (
+While (streamLength(0) == 3) Then (
     Print(getStream(0,2));
     reduceStream(0);
     reduceStream(0);
     reduceStream(0);
     incrementStream(4);
+If (streamLength(0) == 4) Then (
     Print(getStream(0,3));
     reduceStream(0);
     reduceStream(0);
     reduceStream(0);
     reduceStream(0);
-    incrementStream(3))
+    incrementStream(3)) Else False)

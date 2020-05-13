@@ -1,21 +1,19 @@
-incrementStream(2);
+incrementStream(1);
 counter = 0;
 checksum = 0;
-While(streamLength(0) >= 2) Then (
+While(streamLength(0) == 1) Then (
     a = getStream(0, 0);
     b = getStream(1, 0);
-    c = getStream(0, 1);
-    d = getStream(1, 1);
     Print(a);
     Print(b);
-    Print(c);
-    Print(d);
     reduceStream(0);
     reduceStream(1);
-    reduceStream(0);
-    reduceStream(1);
-    checksum = checksum + a - b + c - d;
+    checksum = checksum + a - b;
     counter = counter + 1;
-If (counter - 5 * (counter / 5) == 0) Then (Print(checksum))
-Else incrementStream(2))
-    
+If (counter == 5) Then (
+    Print(checksum);
+    counter = 0;
+    checksum = 0)
+Else (False);
+    incrementStream(1))
+	
