@@ -1,6 +1,6 @@
 incrementStream(1);
 counter = 1;
-While (streamLength(0) != 0) Then (
+While (!(streamLength(0) == 0)) Then (
     Print(getStream(0,0));
     reduceStream(0);
     Print(counter);
