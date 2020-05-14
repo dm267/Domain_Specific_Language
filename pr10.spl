@@ -1,0 +1,25 @@
+done = False;
+While (!done) Then (
+    incrementStream(1);
+    
+    fibSum = 0;
+    i = 0;
+    While (i < streamLength(0)) Then (
+        level = getStream(0,i);
+        
+        a = 1;
+        b = 1;
+        c = 1;
+        
+        j = 2;
+        While (j < (streamLength(0) - i)) Then (
+            c = a + b;
+            a = b;
+            b = c;
+            j = j + 1
+        );
+        fibSum = fibSum + (c * level);
+        i = i + 1
+    );
+    Print(fibSum)
+)

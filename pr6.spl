@@ -1,0 +1,43 @@
+incrementStream(3);
+flag = True;
+If (streamLength(0) == 1) Then (
+    Print(getStream(0, 0)))
+Else If (streamLength(0) == 2) Then (
+    Print(getStream(0, 0));
+    Print(getStream(0, 1));
+    Print(getStream(1, 0));
+    Print(getStream(1, 1)))
+Else While (flag) Then (
+    Print(getStream(0, 0));
+    Print(getStream(0, 1));
+    Print(getStream(1, 0));
+    Print(getStream(1, 1));
+    Print(getStream(1, 2));
+    reduceStream(0);
+    reduceStream(0);
+    reduceStream(1);
+    reduceStream(1);
+    reduceStream(1);
+    a = streamLength(0);
+	b = streamLength(1);
+	incrementStream(3);
+	
+	If ((streamLength(0) == 1) && (streamLength(1) == 0)) Then (
+		Print(getStream(0, 0));
+		flag = False)
+	Else (If ((streamLength(0) >= 2) && (streamLength(1) == 0)) Then (
+		Print(getStream(0, 0));
+		Print(getStream(0, 1));
+		flag = False)
+	Else (If ((streamLength(0) >= 2) && (streamLength(1) == 1)) Then (
+		Print(getStream(0, 0));
+		Print(getStream(0, 1));
+		Print(getStream(1, 0));
+		flag = False)
+	Else (If ((streamLength(0) >= 2) && (streamLength(1) == 2)) Then (
+		Print(getStream(0, 0));
+		Print(getStream(0, 1));
+		Print(getStream(1, 0));
+		Print(getStream(1, 1));
+		flag = False) Else False))))
+
